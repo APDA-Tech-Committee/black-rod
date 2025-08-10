@@ -228,6 +228,8 @@ def update_soty(debater, season=settings.CURRENT_SEASON):
 
 
 def update_noty(debater, season=settings.CURRENT_SEASON):
+    if season > settings.LAST_NOTY_SEASON:
+        return None
     if not any([team.team_results.count() > 0 or team.govs.count() > 0 or team.opps.count() > 0 for team in debater.teams.all()]) and \
        debater.speaker_results.count() == 0:
         debater.delete()

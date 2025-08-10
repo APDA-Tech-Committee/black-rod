@@ -104,57 +104,20 @@ $theme-colors: (
     }
 }
 
-.rankings-recompute-card {
+.rankings-card {
+    border-radius: 8px;
+    
     .rankings-warning {
         border-left: 4px solid #ffc107;
     }
     
-    .rankings-form {
-        .rankings-select {
-            border-radius: 8px;
-            transition: border-color 0.2s ease;
-            
-            &:focus {
-                border-color: #731DDD;
-                box-shadow: 0 0 0 0.2rem rgba(115, 29, 221, 0.25);
-            }
-        }
-        
-        .rankings-btn {
-            border-radius: 8px;
-            font-weight: 600;
-            
-            &:hover:not(:disabled) {
-                transform: translateY(-1px);
-            }
-            
-            &:disabled {
-                cursor: not-allowed;
-            }
-        }
+    .form-control:focus {
+        border-color: #731DDD;
+        box-shadow: 0 0 0 0.2rem rgba(115, 29, 221, 0.25);
     }
     
-    .rankings-info-card {
-        background: #f8f9fa;
-        border: none;
-        border-radius: 8px;
-    }
-    
-    .rankings-progress-bar {
-        height: 20px;
-        border-radius: 10px;
-        
-        .progress-bar {
-            border-radius: 10px;
-        }
-    }
-    
-    .rankings-success {
-        border-left: 4px solid #70A363;
-    }
-    
-    .rankings-error {
-        border-left: 4px solid #dc3545;
+    .btn:hover:not(:disabled) {
+        transform: translateY(-1px);
     }
 }
 

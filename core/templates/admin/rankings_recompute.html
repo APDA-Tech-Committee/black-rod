@@ -1,115 +1,62 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
-    <div class="row mt-lg-5 ml-lg-2 mr-lg-2 mb-lg-5 m-1">
-        <div class="col-lg-12">
-            <div class="card m-2 rankings-recompute-card">
-                <div class="card-body">
-                    <h5 class="card-title">
-                        <i class="fas fa-calculator mr-2"></i>Rankings Recompute Tool
-                    </h5>
-                    <p class="card-text">Recompute rankings for a specific season and ranking type. This tool will update all relevant records and recalculate the final rankings.</p>
+    <div class="container mt-5">
+        <div class="card rankings-card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-calculator mr-2"></i>Rankings Recompute Tool
+                </h5>
+
+                <div class="alert alert-warning rankings-warning" role="alert">
+                    <strong><i class="fas fa-exclamation-triangle mr-2"></i>Warning:</strong>
+                    Recomputation can be difficult to reverse. Use only if necessary.
+                </div>
+                
+                <form id="recomputeForm">
+                    {% csrf_token %}
                     
-                    <!-- Warning Alert -->
-                    <div class="alert alert-warning rankings-warning" role="alert">
-                        <h6><i class="fas fa-exclamation-triangle mr-2"></i>Important Notice</h6>
-                        <p class="mb-0">This operation will recompute all rankings for the selected season and type. This may take several minutes for large datasets. Please ensure no other users are modifying tournament data during this process.</p>
-                    </div>
-                    
-                    <!-- Recompute Form -->
-                    <div class="row">
-                        <div class="col-lg-8">
-                            <form id="recomputeForm" class="rankings-form">
-                                {% csrf_token %}
-                                
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <label for="season" class="font-weight-bold">
-                                            <i class="fas fa-calendar-alt mr-1"></i>Season
-                                        </label>
-                                        <select class="form-control rankings-select" id="season" name="season" required>
-                                            <option value="">Select a season...</option>
-                                            {% for season_key, season_display in seasons %}
-                                                <option value="{{ season_key }}">{{ season_display }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group col-md-6">
-                                        <label for="ranking_type" class="font-weight-bold">
-                                            <i class="fas fa-trophy mr-1"></i>Ranking Type
-                                        </label>
-                                        <select class="form-control rankings-select" id="ranking_type" name="ranking_type" required>
-                                            <option value="">Select a ranking type...</option>
-                                            {% for type_key, type_display in ranking_types %}
-                                                <option value="{{ type_key }}">{{ type_display }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <button type="submit" class="btn btn-primary rankings-btn" id="recomputeBtn">
-                                        <i class="fas fa-play mr-2"></i>Start Recomputation
-                                    </button>
-                                    <a href="{% url 'core:admin_tools' %}" class="btn btn-secondary ml-2">
-                                        <i class="fas fa-arrow-left mr-2"></i>Back to Admin Tools
-                                    </a>
-                                </div>
-                            </form>
+                    <div class="form-row">
+                        <div class="col-md-6">
+                            <label for="season" class="font-weight-bold">Season</label>
+                            <select class="form-control" id="season" name="season" required>
+                                <option value="">Select a season...</option>
+                                {% for season_key, season_display in seasons %}
+                                    <option value="{{ season_key }}">{{ season_display }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         
-                        <div class="col-lg-4">
-                            <div class="card rankings-info-card">
-                                <div class="card-body">
-                                    <h6 class="card-title text-dark">
-                                        <i class="fas fa-info-circle mr-2"></i>Information
-                                    </h6>
-                                    <ul class="list-unstyled mb-0 small">
-                                        <li class="mb-2">
-                                            <i class="fas fa-users text-primary mr-1"></i>
-                                            <strong>TOTY:</strong> Updates all team records and rankings
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="fas fa-user text-success mr-1"></i>
-                                            <strong>SOTY:</strong> Updates all varsity debater speaker records
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="fas fa-user-graduate text-warning mr-1"></i>
-                                            <strong>NOTY:</strong> Updates all novice debater speaker records
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
+                        <div class="col-md-6">
+                            <label for="ranking_type" class="font-weight-bold">Ranking Type</label>
+                            <select class="form-control" id="ranking_type" name="ranking_type" required>
+                                <option value="">Select a ranking type...</option>
+                                {% for type_key, type_display in ranking_types %}
+                                    <option value="{{ type_key }}">{{ type_display }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                     </div>
                     
-                    <!-- Progress Section -->
-                    <div id="progressSection" class="mt-4 rankings-progress" style="display: none;">
-                        <div class="card">
-                            <div class="card-body">
-                                <h6 class="card-title">
-                                    <i class="fas fa-cog fa-spin mr-2"></i>Processing...
-                                </h6>
-                                <div class="progress mb-3 rankings-progress-bar">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" 
-                                         role="progressbar" 
-                                         style="width: 0%"
-                                         aria-valuenow="0" 
-                                         aria-valuemin="0" 
-                                         aria-valuemax="100">
-                                        0%
-                                    </div>
-                                </div>
-                                <p id="progressMessage" class="mb-0 text-muted">Initializing recomputation...</p>
-                            </div>
-                        </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary" id="recomputeBtn">
+                            <i class="fas fa-play mr-2"></i>Start Recomputation
+                        </button>
+                        <a href="{% url 'core:admin_tools' %}" class="btn btn-secondary ml-2">
+                            <i class="fas fa-arrow-left mr-2"></i>Back
+                        </a>
                     </div>
-                    
-                    <div id="resultsSection" class="mt-4 rankings-results" style="display: none;">
-                        <div id="resultsContent"></div>
+                </form>
+                
+                <div id="progressSection" class="mt-4" style="display: none;">
+                    <h6><i class="fas fa-cog fa-spin mr-2"></i>Processing...</h6>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                             style="width: 0%">0%</div>
                     </div>
                 </div>
+                
+                <div id="resultsSection" class="mt-4" style="display: none;"></div>
             </div>
         </div>
     </div>
@@ -126,11 +73,16 @@
                 return;
             }
             
+            if (rankingType === 'noty' && parseInt(season) > 2020) {
+                alert('NOTY rankings are only available for the 2019-2020 season and earlier.');
+                return;
+            }
+            
             const btn = document.getElementById('recomputeBtn');
             const progressSection = document.getElementById('progressSection');
             const resultsSection = document.getElementById('resultsSection');
             const progressBar = document.querySelector('.progress-bar');
-
+            
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
             progressSection.style.display = 'block';
@@ -158,19 +110,13 @@
                 setTimeout(() => {
                     progressSection.style.display = 'none';
                     resultsSection.style.display = 'block';
-                    
-                    const alertType = data.success ? 'success rankings-success' : 'danger rankings-error';
+                    const alertClass = data.success ? 'success' : 'danger';
                     const icon = data.success ? 'check-circle' : 'exclamation-circle';
-                    const title = data.success ? 'Recomputation Complete' : 'Error';
-                    const message = data.success ? data.message : data.error;
-                    
-                    document.getElementById('resultsContent').innerHTML = `
-                        <div class="alert alert-${alertType}">
-                            <h6><i class="fas fa-${icon} mr-2"></i>${title}</h6>
-                            <p class="mb-0">${message}</p>
+                    resultsSection.innerHTML = `
+                        <div class="alert alert-${alertClass}">
+                            <i class="fas fa-${icon} mr-2"></i>${data.success ? data.message : data.error}
                         </div>
                     `;
-                    
                     btn.disabled = false;
                     btn.innerHTML = '<i class="fas fa-play mr-2"></i>Start Recomputation';
                 }, 1000);
@@ -179,14 +125,7 @@
                 clearInterval(interval);
                 progressSection.style.display = 'none';
                 resultsSection.style.display = 'block';
-                
-                document.getElementById('resultsContent').innerHTML = `
-                    <div class="alert alert-danger rankings-error">
-                        <h6><i class="fas fa-exclamation-circle mr-2"></i>Network Error</h6>
-                        <p class="mb-0">Failed to connect to server. Please try again.</p>
-                    </div>
-                `;
-                
+                resultsSection.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-circle mr-2"></i>Failed to connect to server. Please try again.</div>';
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-play mr-2"></i>Start Recomputation';
             });
