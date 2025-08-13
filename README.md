@@ -32,6 +32,7 @@ pip install -r requirements.txt
 ##### Set up Webpack assets
 ```bash
 npm install
+npm run build
 ```
 
 ##### Load test data (Username: `tab`, Password: `password`)
