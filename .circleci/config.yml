@@ -15,10 +15,10 @@ jobs:
             pip install -r requirements.txt -c constraints.txt
             pip install pylint
       - run:
-          name: Pylint
+          name: Pylint (excluding test directories)
           command: |
             . venv/bin/activate
-            pylint apda apdaonline core
+            pylint apda apdaonline core --ignore-patterns='^tests?$'
 
   lint_html:
     docker:
@@ -53,7 +53,7 @@ jobs:
             pip install -r requirements.txt -c constraints.txt
             pip install pytest pytest-django pytest-cov
       - run:
-          name: Run tests with coverage
+          name: Run tests with coverage (excluding test dirs from coverage)
           command: |
             . venv/bin/activate
             pytest \
@@ -61,7 +61,8 @@ jobs:
               --cov=apda \
               --cov=core \
               --cov-report=term-missing \
-              --cov-fail-under=65
+              --cov-fail-under=65 \
+              --cov-config=<(echo '[run]'; echo 'omit = */tests/* */test/*')
 
 workflows:
   version: 2

@@ -1,11 +1,10 @@
 import pytest
 from datetime import date
 from django.test import TestCase
-from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 
 from core.models.school import School, SchoolLookup
-from core.models.debater import Debater, QualPoints
+from core.models.debater import Debater
 from core.models.tournament import Tournament
 
 
@@ -105,10 +104,16 @@ class DebaterModelTest(TestCase):
     def test_debater_status_choices(self):
         """Test debater status choices"""
         varsity_debater = Debater.objects.create(
-            first_name="John", last_name="Doe", school=self.school, status=Debater.VARSITY
+            first_name="John",
+            last_name="Doe",
+            school=self.school,
+            status=Debater.VARSITY,
         )
         novice_debater = Debater.objects.create(
-            first_name="Jane", last_name="Smith", school=self.school, status=Debater.NOVICE
+            first_name="Jane",
+            last_name="Smith",
+            school=self.school,
+            status=Debater.NOVICE,
         )
         self.assertEqual(varsity_debater.status, Debater.VARSITY)
         self.assertEqual(novice_debater.status, Debater.NOVICE)
@@ -138,10 +143,10 @@ class TournamentModelTest(TestCase):
     def test_tournament_creation(self):
         """Test basic tournament creation"""
         tournament = Tournament.objects.create(
-            name="Harvard Invitational", 
-            host=self.school, 
+            name="Harvard Invitational",
+            host=self.school,
             date=date.today(),
-            season="2024"
+            season="2024",
         )
         # The save method automatically sets name to host.name + suffix
         self.assertEqual(tournament.name, "Harvard University")
@@ -156,7 +161,7 @@ class TournamentModelTest(TestCase):
             name="Open Tournament",
             date=date.today(),
             season="2024",
-            manual_name="Open Tournament"  # This overrides the auto-generated name
+            manual_name="Open Tournament",  # This overrides the auto-generated name
         )
         # Save without triggering the host-dependent logic
         super(Tournament, tournament).save()
@@ -166,11 +171,11 @@ class TournamentModelTest(TestCase):
     def test_tournament_custom_rounds(self):
         """Test tournament with custom number of rounds"""
         tournament = Tournament.objects.create(
-            name="Quick Tournament", 
-            num_rounds=3, 
-            host=self.school, 
+            name="Quick Tournament",
+            num_rounds=3,
+            host=self.school,
             date=date.today(),
-            season="2024"
+            season="2024",
         )
         self.assertEqual(tournament.num_rounds, 3)
 
@@ -181,7 +186,7 @@ class TournamentModelTest(TestCase):
             manual_name="Special Harvard Tournament",
             host=self.school,
             date=date.today(),
-            season="2024"
+            season="2024",
         )
         # Manual name overrides the generated name
         self.assertEqual(tournament.name, "Special Harvard Tournament")
@@ -195,18 +200,19 @@ class TournamentModelTest(TestCase):
             host=self.school,
             date=date.today(),
             season="2024",
-            qual_type=Tournament.POINTS
+            qual_type=Tournament.POINTS,
         )
         self.assertEqual(tournament1.name, "Harvard University")
-        
+
         # Create second tournament from same host - should get suffix
         from datetime import timedelta
+
         tournament2 = Tournament.objects.create(
             name="Harvard Tournament 2",
             host=self.school,
             date=date.today() + timedelta(days=1),
             season="2024",
-            qual_type=Tournament.POINTS
+            qual_type=Tournament.POINTS,
         )
         self.assertEqual(tournament2.name, "Harvard University II")
 

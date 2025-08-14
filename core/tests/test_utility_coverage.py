@@ -1,14 +1,12 @@
 """
 Test actual utility functions to increase coverage
 """
-import pytest
+
 from django.test import TestCase
-from unittest.mock import Mock, patch, MagicMock
-from django.http import HttpRequest
-from django.contrib.auth.models import User
+from unittest.mock import Mock
 from datetime import date
 
-from core.models import School, Tournament, Debater, Team
+from core.models import School, Tournament, Debater
 
 
 class UtilityFunctionTests(TestCase):
@@ -20,17 +18,17 @@ class UtilityFunctionTests(TestCase):
             name="Test Tournament",
             host=self.school,
             date=date(2024, 1, 1),
-            season="2024"
+            season="2024",
         )
 
     def test_generics_utils_if_available(self):
         """Test generics utils if they're available"""
         try:
             from core.utils import generics
-            
+
             # Test if there are any callable functions
             for attr_name in dir(generics):
-                if not attr_name.startswith('_'):
+                if not attr_name.startswith("_"):
                     attr = getattr(generics, attr_name)
                     if callable(attr):
                         # Try to get function signature or call with safe defaults
@@ -47,10 +45,10 @@ class UtilityFunctionTests(TestCase):
         """Test filter utils if they're available"""
         try:
             from core.utils import filter as filter_utils
-            
+
             # Test any filter functions
             for attr_name in dir(filter_utils):
-                if not attr_name.startswith('_'):
+                if not attr_name.startswith("_"):
                     attr = getattr(filter_utils, attr_name)
                     if callable(attr):
                         try:
@@ -65,15 +63,15 @@ class UtilityFunctionTests(TestCase):
         """Test mixin classes if available"""
         try:
             from core.utils import mixins
-            
+
             # Test that mixins can be imported
             for attr_name in dir(mixins):
-                if not attr_name.startswith('_'):
+                if not attr_name.startswith("_"):
                     attr = getattr(mixins, attr_name)
-                    if hasattr(attr, '__bases__'):  # It's a class
+                    if hasattr(attr, "__bases__"):  # It's a class
                         try:
                             # Test class can be referenced
-                            self.assertTrue(hasattr(attr, '__name__'))
+                            self.assertTrue(hasattr(attr, "__name__"))
                         except Exception:
                             pass
         except ImportError:
@@ -83,9 +81,9 @@ class UtilityFunctionTests(TestCase):
         """Test context processors if available"""
         try:
             from core.utils import context_processors
-            
+
             for attr_name in dir(context_processors):
-                if not attr_name.startswith('_'):
+                if not attr_name.startswith("_"):
                     attr = getattr(context_processors, attr_name)
                     if callable(attr):
                         try:
@@ -103,10 +101,10 @@ class UtilityFunctionTests(TestCase):
         """Test template tag functions"""
         try:
             from core.templatetags import tags
-            
+
             # Test any tag functions
             for attr_name in dir(tags):
-                if not attr_name.startswith('_') and callable(getattr(tags, attr_name)):
+                if not attr_name.startswith("_") and callable(getattr(tags, attr_name)):
                     func = getattr(tags, attr_name)
                     try:
                         # Test that function is accessible
@@ -120,11 +118,11 @@ class UtilityFunctionTests(TestCase):
         """Test model methods more comprehensively"""
         # Test Tournament methods
         self.tournament.save()  # Exercise save method
-        
+
         # Test Tournament string representation
         str_repr = str(self.tournament)
         self.assertIsInstance(str_repr, str)
-        
+
         # Test School methods
         self.school.save()
         school_str = str(self.school)
@@ -138,13 +136,12 @@ class UtilityFunctionTests(TestCase):
             last_name="Doe",
             school=self.school,
             status=Debater.VARSITY,
-            is_independent=False
         )
-        
+
         # Test debater properties
         full_name = str(debater)
         self.assertEqual(full_name, "John Doe")
-        
+
         # Test school relationship
         self.assertEqual(debater.school, self.school)
 
@@ -152,16 +149,16 @@ class UtilityFunctionTests(TestCase):
         """Test form validation methods if forms are available"""
         try:
             from core import forms
-            
+
             # Find any form classes
             for attr_name in dir(forms):
                 attr = getattr(forms, attr_name)
-                if hasattr(attr, '_meta') and hasattr(attr._meta, 'model'):
+                if hasattr(attr, "_meta") and hasattr(attr._meta, "model"):
                     # It's a model form
                     try:
                         # Test form instantiation
                         form = attr()
-                        self.assertTrue(hasattr(form, 'is_valid'))
+                        self.assertTrue(hasattr(form, "is_valid"))
                     except Exception:
                         # Form might need specific parameters
                         pass
@@ -173,18 +170,18 @@ class UtilityFunctionTests(TestCase):
         try:
             from django.contrib import admin
             from core import admin as core_admin
-            
+
             # Test that admin module can be imported and has content
-            admin_attrs = [attr for attr in dir(core_admin) if not attr.startswith('_')]
+            admin_attrs = [attr for attr in dir(core_admin) if not attr.startswith("_")]
             self.assertTrue(len(admin_attrs) > 0)
-            
+
             # Test any admin class attributes
             for attr_name in admin_attrs:
                 attr = getattr(core_admin, attr_name)
-                if hasattr(attr, 'model'):
+                if hasattr(attr, "model"):
                     # It's an admin class
                     try:
-                        self.assertTrue(hasattr(attr, 'model'))
+                        self.assertTrue(hasattr(attr, "model"))
                     except Exception:
                         pass
         except ImportError:
@@ -194,9 +191,9 @@ class UtilityFunctionTests(TestCase):
         """Test URL patterns basic functionality"""
         try:
             from core import urls
-            
+
             # Test that urls module has urlpatterns
-            if hasattr(urls, 'urlpatterns'):
+            if hasattr(urls, "urlpatterns"):
                 patterns = urls.urlpatterns
                 self.assertIsInstance(patterns, list)
         except ImportError:
@@ -206,9 +203,9 @@ class UtilityFunctionTests(TestCase):
         """Test view imports basic functionality"""
         try:
             from core import views
-            
+
             # Test that views module exists
-            view_attrs = [attr for attr in dir(views) if not attr.startswith('_')]
+            view_attrs = [attr for attr in dir(views) if not attr.startswith("_")]
             self.assertTrue(len(view_attrs) > 0)
         except ImportError:
             pass
@@ -218,11 +215,11 @@ class UtilityFunctionTests(TestCase):
         # Test School manager
         all_schools = School.objects.all()
         self.assertIn(self.school, all_schools)
-        
+
         # Test Tournament manager
         all_tournaments = Tournament.objects.all()
         self.assertIn(self.tournament, all_tournaments)
-        
+
         # Test filtering
         tournaments_2024 = Tournament.objects.filter(season="2024")
         self.assertIn(self.tournament, tournaments_2024)
@@ -230,9 +227,9 @@ class UtilityFunctionTests(TestCase):
     def test_model_field_choices(self):
         """Test model field choices"""
         # Test Debater status choices
-        choices = Debater.STATUS_CHOICES
+        choices = Debater.STATUS
         self.assertTrue(len(choices) > 0)
-        
+
         # Test that choices include expected values
         choice_values = [choice[0] for choice in choices]
         self.assertIn(Debater.VARSITY, choice_values)
@@ -242,24 +239,23 @@ class UtilityFunctionTests(TestCase):
         """Test model meta options"""
         # Test Tournament meta
         meta = Tournament._meta
-        self.assertTrue(hasattr(meta, 'db_table'))
-        
+        self.assertTrue(hasattr(meta, "db_table"))
+
         # Test School meta
         school_meta = School._meta
-        self.assertTrue(hasattr(school_meta, 'db_table'))
+        self.assertTrue(hasattr(school_meta, "db_table"))
 
     def test_signal_handlers_if_available(self):
         """Test Django signal handlers if they exist"""
         try:
             # Look for signals in models or separate signal files
-            from django.db.models.signals import post_save, pre_save
-            
+
             # Create a model to trigger signals
             test_school = School(name="Signal Test School")
             test_school.save()  # Should trigger post_save
-            
+
             # Test that the object was created
             self.assertTrue(test_school.pk)
-            
+
         except Exception:
             pass

@@ -5,7 +5,6 @@ from django.test import TestCase, Client
 from core.models.school import School
 from core.models.debater import Debater
 from core.models.tournament import Tournament
-from core.models.user import User
 
 
 class ViewTestCase(TestCase):
@@ -16,16 +15,13 @@ class ViewTestCase(TestCase):
             first_name="John", last_name="Doe", school=self.school
         )
         self.tournament = Tournament.objects.create(
-            name="Test Tournament", 
-            host=self.school, 
-            date=date.today(),
-            season="2024"
+            name="Test Tournament", host=self.school, date=date.today(), season="2024"
         )
 
     def test_home_page_loads(self):
         """Test that home page loads without errors"""
         try:
-            response = self.client.get('/')
+            response = self.client.get("/")
             # Accept any response that doesn't crash
             self.assertIn(response.status_code, [200, 302, 404])
         except:
@@ -37,7 +33,7 @@ class ViewTestCase(TestCase):
         school = School.objects.create(name="Method Test School")
         str_result = str(school)
         self.assertEqual(str_result, "Method Test School")
-        
+
         # Test get_absolute_url doesn't crash
         try:
             url = school.get_absolute_url()
@@ -51,13 +47,13 @@ class ViewTestCase(TestCase):
         debater = Debater.objects.create(
             first_name="Test", last_name="User", school=self.school
         )
-        
+
         # Test string representation
         self.assertEqual(str(debater), "Test User")
-        
+
         # Test name property
         self.assertEqual(debater.name, "Test User")
-        
+
         # Test get_absolute_url doesn't crash
         try:
             url = debater.get_absolute_url()
@@ -70,14 +66,17 @@ class ViewTestCase(TestCase):
         """Test that login works"""
         # Create user with email and is_active=True for allauth compatibility
         from django.contrib.auth import get_user_model
+
         User = get_user_model()
         user = User.objects.create_user(
-            username='testuser', 
-            password='testpass123',
-            email='testuser@example.com',
-            is_active=True
+            username="testuser",
+            password="testpass123",
+            email="testuser@example.com",
+            is_active=True,
         )
-        login_successful = self.client.login(username='testuser', password='testpass123')
+        login_successful = self.client.login(
+            username="testuser", password="testpass123"
+        )
         self.assertTrue(login_successful)
 
     def test_model_relationships(self):
@@ -85,7 +84,7 @@ class ViewTestCase(TestCase):
         # Test school-debater relationship
         debaters = self.school.debaters.all()
         self.assertIn(self.debater, debaters)
-        
+
         # Test school-tournament relationship
         tournaments = self.school.hosted_tournaments.all()
         self.assertIn(self.tournament, tournaments)
@@ -93,14 +92,14 @@ class ViewTestCase(TestCase):
 
 class ModelIntegrationTest(TestCase):
     """Test model interactions and business logic"""
-    
+
     def test_school_cascade_behavior(self):
         """Test what happens when school is deleted"""
         school = School.objects.create(name="Delete Test School")
         debater = Debater.objects.create(
             first_name="Test", last_name="Debater", school=school
         )
-        
+
         # Delete school - debater should still exist but with null school
         school.delete()
         debater.refresh_from_db()
@@ -109,14 +108,12 @@ class ModelIntegrationTest(TestCase):
     def test_debater_status_behavior(self):
         """Test debater status field behavior"""
         varsity_debater = Debater.objects.create(
-            first_name="Varsity", last_name="Player", 
-            status=Debater.VARSITY
+            first_name="Varsity", last_name="Player", status=Debater.VARSITY
         )
         novice_debater = Debater.objects.create(
-            first_name="Novice", last_name="Player", 
-            status=Debater.NOVICE
+            first_name="Novice", last_name="Player", status=Debater.NOVICE
         )
-        
+
         self.assertEqual(varsity_debater.get_status_display(), "Varsity")
         self.assertEqual(novice_debater.get_status_display(), "Novice")
 
@@ -124,10 +121,10 @@ class ModelIntegrationTest(TestCase):
         """Test tournament default values"""
         # Create tournament with manual_name to avoid host requirement
         tournament = Tournament(
-            name="Default Test Tournament", 
+            name="Default Test Tournament",
             date=date.today(),
             season="2024",
-            manual_name="Default Test Tournament"
+            manual_name="Default Test Tournament",
         )
         super(Tournament, tournament).save()
         self.assertEqual(tournament.num_rounds, 5)

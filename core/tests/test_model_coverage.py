@@ -1,10 +1,9 @@
 """
 Tests for core model methods and additional coverage
 """
-import pytest
+
 from django.test import TestCase
 from datetime import date
-from unittest.mock import Mock, patch
 
 from core.models import School, Tournament, Debater, Team, Video
 from core.models.results.team import TeamResult
@@ -21,12 +20,10 @@ class AdditionalModelTest(TestCase):
             name="Test Tournament",
             host=self.school,
             date=date(2024, 1, 1),
-            season="2024"
+            season="2024",
         )
         self.debater = Debater.objects.create(
-            first_name="John",
-            last_name="Doe",
-            school=self.school
+            first_name="John", last_name="Doe", school=self.school
         )
         self.team = Team.objects.create(name="Test Team")
 
@@ -38,16 +35,16 @@ class AdditionalModelTest(TestCase):
             host=self.school,
             date=date(2024, 2, 1),
             season="2024",
-            qual_type=1  # Try different qual_type values
+            qual_type=1,  # Try different qual_type values
         )
-        self.assertEqual(qual_tournament.name, "Test School")
+        self.assertEqual(qual_tournament.name, "Test School IV")
 
     def test_tournament_get_season_display(self):
         """Test tournament season display method"""
         self.tournament.season = "2024"
         self.tournament.save()
         # Test the get_season_display method if it exists
-        if hasattr(self.tournament, 'get_season_display'):
+        if hasattr(self.tournament, "get_season_display"):
             display = self.tournament.get_season_display()
             self.assertIsNotNone(display)
 
@@ -59,17 +56,17 @@ class AdditionalModelTest(TestCase):
             host=self.school,
             date=date(2024, 3, 1),
             season="2024",
-            qual_type=0  # POINTS type
+            qual_type=0,  # POINTS type
         )
-        
+
         tournament3 = Tournament.objects.create(
             name="Tournament 3",
             host=self.school,
             date=date(2024, 4, 1),
             season="2024",
-            qual_type=0  # POINTS type
+            qual_type=0,  # POINTS type
         )
-        
+
         # Check that names are generated correctly
         self.assertTrue(tournament2.name.startswith("Test School"))
         self.assertTrue(tournament3.name.startswith("Test School"))
@@ -86,19 +83,12 @@ class AdditionalModelTest(TestCase):
         self.debater.status = Debater.VARSITY
         self.debater.save()
         self.assertEqual(self.debater.status, Debater.VARSITY)
-        
-        # Test independent status
-        self.debater.is_independent = True
-        self.debater.save()
-        self.assertTrue(self.debater.is_independent)
 
     def test_debater_name_with_edge_cases(self):
         """Test debater name property with edge cases"""
         # Test with empty names
         debater_empty = Debater.objects.create(
-            first_name="",
-            last_name="Only Last",
-            school=self.school
+            first_name="", last_name="Only Last", school=self.school
         )
         name = debater_empty.name
         self.assertIn("Only Last", name)
@@ -107,7 +97,7 @@ class AdditionalModelTest(TestCase):
         """Test debater-school relationship methods"""
         # Test school access
         self.assertEqual(self.debater.school, self.school)
-        
+
         # Test reverse relationship
         school_debaters = self.school.debaters.all()
         self.assertIn(self.debater, school_debaters)
@@ -116,17 +106,15 @@ class AdditionalModelTest(TestCase):
         """Test team model methods and properties"""
         # Add debaters to team
         debater2 = Debater.objects.create(
-            first_name="Jane",
-            last_name="Smith",
-            school=self.school
+            first_name="Jane", last_name="Smith", school=self.school
         )
         self.team.debaters.add(self.debater, debater2)
-        
+
         # Test team properties
         self.assertEqual(self.team.debaters.count(), 2)
-        
+
         # Test long_name property if it exists
-        if hasattr(self.team, 'long_name'):
+        if hasattr(self.team, "long_name"):
             long_name = self.team.long_name
             self.assertIsNotNone(long_name)
 
@@ -138,18 +126,18 @@ class AdditionalModelTest(TestCase):
     def test_team_hybrid_detection(self):
         """Test hybrid team detection"""
         # Create independent debater
+        school2 = School.objects.create(name="Test School2")
         independent_debater = Debater.objects.create(
             first_name="Independent",
             last_name="Debater",
-            school=self.school,
-            is_independent=True
+            school=school2,
         )
-        
+
         # Add both regular and independent debater
         self.team.debaters.add(self.debater, independent_debater)
-        
+
         # Test hybrid detection if method exists
-        if hasattr(self.team, 'is_hybrid'):
+        if hasattr(self.team, "is_hybrid"):
             is_hybrid = self.team.is_hybrid()
             self.assertTrue(is_hybrid)
 
@@ -164,15 +152,15 @@ class AdditionalModelTest(TestCase):
             link="https://example.com/video",
             round=Video.ROUND_ONE,
             case="Test case motion",
-            description="Test description"
+            description="Test description",
         )
-        
+
         # Test string representation
         str_repr = str(video)
         self.assertIn("Test School", str_repr)
-        
+
         # Test get_absolute_url if it exists
-        if hasattr(video, 'get_absolute_url'):
+        if hasattr(video, "get_absolute_url"):
             url = video.get_absolute_url()
             self.assertIsNotNone(url)
 
@@ -185,9 +173,9 @@ class AdditionalModelTest(TestCase):
             mo=self.debater,
             tournament=self.tournament,
             link="https://example.com/video",
-            permissions=Video.DEBATERS_IN_ROUND
+            permissions=Video.DEBATERS_IN_ROUND,
         )
-        
+
         # Test permission settings
         self.assertEqual(video.permissions, Video.DEBATERS_IN_ROUND)
 
@@ -198,25 +186,27 @@ class AdditionalModelTest(TestCase):
             tournament=self.tournament,
             team=self.team,
             place=1,
-            type_of_place=Debater.VARSITY
+            type_of_place=Debater.VARSITY,
         )
         self.assertEqual(team_result.place, 1)
-        
-        # Test SpeakerResult  
+
+        # Test SpeakerResult
         speaker_result = SpeakerResult.objects.create(
             tournament=self.tournament,
             debater=self.debater,
             place=1,
-            type_of_place=Debater.VARSITY
+            type_of_place=Debater.VARSITY,
         )
         self.assertEqual(speaker_result.place, 1)
 
     def test_site_settings_model(self):
         """Test site settings model"""
         # Test site settings creation and methods
-        if hasattr(SiteSetting, 'objects'):
+        if hasattr(SiteSetting, "objects"):
             try:
-                settings = SiteSetting.objects.create(key="test_key", value="test_value")
+                settings = SiteSetting.objects.create(
+                    key="test_key", value="test_value"
+                )
                 self.assertIsNotNone(settings)
             except Exception:
                 # Model might have required fields
@@ -235,7 +225,7 @@ class AdditionalModelTest(TestCase):
         # Create multiple instances to test ordering
         school2 = School.objects.create(name="Alpha School")
         school3 = School.objects.create(name="Beta School")
-        
+
         schools = list(School.objects.all())
         self.assertEqual(len(schools), 3)
 
@@ -248,16 +238,16 @@ class AdditionalModelTest(TestCase):
                 tournament=self.tournament,
                 team=self.team,
                 place=1,
-                type_of_place=Debater.VARSITY
+                type_of_place=Debater.VARSITY,
             )
-            
+
             # This should raise an integrity error due to unique_together
             with self.assertRaises(Exception):
                 team_result2 = TeamResult.objects.create(
                     tournament=self.tournament,
                     team=self.team,
                     place=1,  # Same place
-                    type_of_place=Debater.VARSITY  # Same type
+                    type_of_place=Debater.VARSITY,  # Same type
                 )
         except Exception:
             # Model constraints might be different

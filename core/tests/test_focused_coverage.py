@@ -1,12 +1,9 @@
 """
 Focused tests to increase coverage for core utilities and models
 """
-import pytest
+
 from django.test import TestCase
 from datetime import date
-from unittest.mock import Mock, patch
-import os
-import tempfile
 
 from core.models import School, Tournament, Debater, Team, Video
 from core.models.results.team import TeamResult
@@ -23,12 +20,10 @@ class FocusedCoverageTest(TestCase):
             name="Test Tournament",
             host=self.school,
             date=date(2024, 1, 1),
-            season="2024"
+            season="2024",
         )
         self.debater = Debater.objects.create(
-            first_name="John",
-            last_name="Doe",
-            school=self.school
+            first_name="John", last_name="Doe", school=self.school
         )
         self.team = Team.objects.create(name="Test Team")
 
@@ -38,15 +33,15 @@ class FocusedCoverageTest(TestCase):
         setting = SiteSetting.set_setting("test_key", "test_value")
         self.assertEqual(setting.key, "test_key")
         self.assertEqual(setting.value, "test_value")
-        
+
         # Test get_setting class method
         value = SiteSetting.get_setting("test_key")
         self.assertEqual(value, "test_value")
-        
+
         # Test get_setting with default
         default_value = SiteSetting.get_setting("nonexistent", "default")
         self.assertEqual(default_value, "default")
-        
+
         # Test string representation
         self.assertEqual(str(setting), "test_key: test_value")
 
@@ -56,12 +51,7 @@ class FocusedCoverageTest(TestCase):
         self.debater.status = Debater.NOVICE
         self.debater.save()
         self.assertEqual(self.debater.status, Debater.NOVICE)
-        
-        # Test independent debater
-        self.debater.is_independent = True
-        self.debater.save()
-        self.assertTrue(self.debater.is_independent)
-        
+
         # Test debater string representation
         name_str = str(self.debater)
         self.assertEqual(name_str, "John Doe")
@@ -71,7 +61,7 @@ class FocusedCoverageTest(TestCase):
         # Test school-debater relationship
         debaters = self.school.debaters.all()
         self.assertIn(self.debater, debaters)
-        
+
         # Test school string representation
         self.assertEqual(str(self.school), "Test School")
 
@@ -79,12 +69,10 @@ class FocusedCoverageTest(TestCase):
         """Test team-debater relationships"""
         # Add debaters to team
         debater2 = Debater.objects.create(
-            first_name="Jane",
-            last_name="Smith",
-            school=self.school
+            first_name="Jane", last_name="Smith", school=self.school
         )
         self.team.debaters.add(self.debater, debater2)
-        
+
         # Test team has debaters
         self.assertEqual(self.team.debaters.count(), 2)
         self.assertIn(self.debater, self.team.debaters.all())
@@ -98,17 +86,17 @@ class FocusedCoverageTest(TestCase):
             manual_name="Manual Name Override",
             host=self.school,
             date=date(2024, 2, 1),
-            season="2024"
+            season="2024",
         )
         # After save, name should be overridden
         self.assertEqual(tournament_manual.name, "Manual Name Override")
-        
+
         # Test tournament without manual name (auto-generated)
         tournament_auto = Tournament.objects.create(
             name="Will Be Overridden",
             host=self.school,
             date=date(2024, 3, 1),
-            season="2024"
+            season="2024",
         )
         # Name should be auto-generated from host
         self.assertTrue(tournament_auto.name.startswith("Test School"))
@@ -116,11 +104,19 @@ class FocusedCoverageTest(TestCase):
     def test_video_model_comprehensive(self):
         """Test video model comprehensively"""
         # Create debaters for all positions
-        pm = Debater.objects.create(first_name="PM", last_name="Debater", school=self.school)
-        lo = Debater.objects.create(first_name="LO", last_name="Debater", school=self.school)
-        mg = Debater.objects.create(first_name="MG", last_name="Debater", school=self.school)
-        mo = Debater.objects.create(first_name="MO", last_name="Debater", school=self.school)
-        
+        pm = Debater.objects.create(
+            first_name="PM", last_name="Debater", school=self.school
+        )
+        lo = Debater.objects.create(
+            first_name="LO", last_name="Debater", school=self.school
+        )
+        mg = Debater.objects.create(
+            first_name="MG", last_name="Debater", school=self.school
+        )
+        mo = Debater.objects.create(
+            first_name="MO", last_name="Debater", school=self.school
+        )
+
         # Test video creation with all fields
         video = Video.objects.create(
             pm=pm,
@@ -133,14 +129,14 @@ class FocusedCoverageTest(TestCase):
             case="Test case motion",
             description="Test description",
             password="test123",
-            permissions=Video.ALL
+            permissions=Video.ALL,
         )
-        
+
         # Test video string representation
         video_str = str(video)
         self.assertIn("Test School", video_str)
         self.assertIn("1", video_str)  # Round display
-        
+
         # Test get_absolute_url
         url = video.get_absolute_url()
         self.assertIn(str(video.pk), url)
@@ -153,22 +149,22 @@ class FocusedCoverageTest(TestCase):
             team=self.team,
             place=1,
             type_of_place=Debater.VARSITY,
-            ghost_points=False
+            ghost_points=False,
         )
         self.assertEqual(team_result.place, 1)
         self.assertFalse(team_result.ghost_points)
-        
+
         # Test SpeakerResult
         speaker_result = SpeakerResult.objects.create(
             tournament=self.tournament,
             debater=self.debater,
             place=1,
             type_of_place=Debater.VARSITY,
-            tie=False
+            tie=False,
         )
         self.assertEqual(speaker_result.place, 1)
         self.assertFalse(speaker_result.tie)
-        
+
         # Test relationships
         self.assertEqual(team_result.tournament, self.tournament)
         self.assertEqual(team_result.team, self.team)
@@ -180,11 +176,11 @@ class FocusedCoverageTest(TestCase):
         # Test School queryset
         schools = School.objects.filter(name__icontains="Test")
         self.assertIn(self.school, schools)
-        
+
         # Test Tournament queryset
         tournaments = Tournament.objects.filter(season="2024")
         self.assertIn(self.tournament, tournaments)
-        
+
         # Test Debater queryset
         debaters = Debater.objects.filter(school=self.school)
         self.assertIn(self.debater, debaters)
@@ -198,17 +194,17 @@ class FocusedCoverageTest(TestCase):
                 tournament=self.tournament,
                 team=self.team,
                 place=1,
-                type_of_place=Debater.VARSITY
+                type_of_place=Debater.VARSITY,
             )
-            
+
             # Try to create duplicate - should work with different place
             result2 = TeamResult.objects.create(
                 tournament=self.tournament,
                 team=self.team,
                 place=2,  # Different place
-                type_of_place=Debater.VARSITY
+                type_of_place=Debater.VARSITY,
             )
-            
+
             self.assertNotEqual(result1.place, result2.place)
         except Exception:
             # Constraints may prevent this
@@ -219,14 +215,16 @@ class FocusedCoverageTest(TestCase):
         # Test basic imports that should work
         try:
             from core.utils import generics
+
             # Try to access module attributes
             attrs = dir(generics)
             self.assertTrue(len(attrs) > 0)
         except ImportError:
             pass
-        
+
         try:
             from core.utils import filter as filter_utils
+
             attrs = dir(filter_utils)
             self.assertTrue(len(attrs) > 0)
         except ImportError:
@@ -236,6 +234,7 @@ class FocusedCoverageTest(TestCase):
         """Test template tags basic import"""
         try:
             from core.templatetags import tags
+
             # Check that tags module has attributes
             tag_attrs = dir(tags)
             self.assertTrue(len(tag_attrs) > 0)
@@ -245,7 +244,7 @@ class FocusedCoverageTest(TestCase):
     def test_forms_basic_functionality(self):
         """Test forms basic functionality"""
         from core import forms
-        
+
         # Check that forms module exists and has content
         form_attrs = dir(forms)
         self.assertTrue(len(form_attrs) > 0)
@@ -253,7 +252,7 @@ class FocusedCoverageTest(TestCase):
     def test_admin_basic_functionality(self):
         """Test admin basic functionality"""
         from core import admin
-        
+
         # Check that admin module exists and has content
         admin_attrs = dir(admin)
         self.assertTrue(len(admin_attrs) > 0)
@@ -262,7 +261,7 @@ class FocusedCoverageTest(TestCase):
         """Test standings models basic functionality"""
         try:
             from core.models.standings import base, coty, noty, soty, toty
-            
+
             # Test that modules can be imported
             modules = [base, coty, noty, soty, toty]
             for module in modules:
@@ -274,7 +273,7 @@ class FocusedCoverageTest(TestCase):
     def test_resources_module(self):
         """Test resources module"""
         from core import resources
-        
+
         # Test that resources module has content
         resource_attrs = dir(resources)
         self.assertTrue(len(resource_attrs) > 0)
@@ -283,8 +282,9 @@ class FocusedCoverageTest(TestCase):
         """Test search indexes import"""
         try:
             from core import search_indexes
+
             # Module should be importable
-            self.assertTrue(hasattr(search_indexes, '__name__'))
+            self.assertTrue(hasattr(search_indexes, "__name__"))
         except ImportError:
             # Module might have dependencies not available
             pass
