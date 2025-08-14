@@ -315,10 +315,7 @@ class ScheduleView(TemplateView):
 
         tournaments = Tournament.objects.filter(season=current_season)
 
-        season_display = "UNKNOWN"
-
-        if tournaments.count() > 0:
-            season_display = tournaments.first().get_season_display()
+        season_display = f"{current_season}-{str(int(current_season)+1)[2:]}"
 
         context["season_display"] = season_display
 
