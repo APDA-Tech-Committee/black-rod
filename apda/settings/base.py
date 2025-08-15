@@ -202,9 +202,7 @@ WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
         'BUNDLE_DIR_NAME': 'webpack_bundles/', # must end with slash
-        'STATS_FILE': os.environ.get('WEBPACK_STATS_FILE',
-                                     os.path.join(BASE_DIR,
-                                    '../webpack-stats.json')),
+        'STATS_FILE': os.path.join(BASE_DIR, 'apda', 'assets', 'webpack_bundles', 'webpack-stats.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map']
@@ -346,8 +344,8 @@ SUMMERNOTE_CONFIG = {
 # Season Settings
 OLDEST = 2004
 LATEST = 2025
-DEFAULT_SEASON = '2024'
-CURRENT_SEASON = '2024'
+DEFAULT_SEASON = '2016'
+CURRENT_SEASON = '2016'
 
 
 SEASONS = tuple(

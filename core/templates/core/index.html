@@ -1,542 +1,705 @@
 {% extends "base/base.html" %}
 {% load tags cache %}
 {% block content %}
-    <div class="card m-lg-5 mt-2 m-1">
-        <div class="card-body">
-            <h5 class="card-title text-white">
-                <ul class="nav nav-pills nav-fill" id="oty_pills" roll="tablist">
-                    <li class="nav-item pr-2">
-                        <a class="nav-link {% if default == 'toty' %}active{% endif %}"
-                           id="toty_button"
-                           data-toggle="tab"
-                           href="#toty">Team of the Year</a>
-                    </li>
-                    <li class="nav-item pr-2">
-                        <a class="nav-link {% if default == 'soty' %}active{% endif %}"
-                           id="soty_button"
-                           data-toggle="tab"
-                           href="#soty">Speaker of the Year</a>
-                    </li>
-                    {% if render_noty %}
-                        <li class="nav-item pr-2">
-                            <a class="nav-link {% if default == 'noty' %}active{% endif %}"
-                               id="noty_button"
-                               data-toggle="tab"
-                               href="#noty">Novice of the Year</a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item pr-2">
-                        <a class="nav-link {% if default == 'coty' %}active{% endif %}"
-                           id="coty_button"
-                           data-toggle="tab"
-                           href="#coty">Club of the Year</a>
-                    </li>
-                    {% if using_online_quals %}
-                        <li class="nav-item pr-2">
-                            <a class="nav-link {% if default == 'online_quals' %}active{% endif %}"
-                               id="online_qual_button"
-                               data-toggle="tab"
-                               href="#online_quals">Online Qualifier Points</a>
-                        </li>
-                    {% endif %}
-                </ul>
-            </h5>
-            <div class="tab-content" id="results">
-                <div class="tab-pane fade table-responsive {% if default == 'toty' %}active show{% endif %}"
-                     id="toty"
-                     role="tabpanel">
-                    {% cache None toty current_season %}
-                    <h5>
-                        <ul class="nav nav-pills float-right pb-3" id="oty_pills" roll="tablist">
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle active"
-                                   data-toggle="dropdown"
-                                   href="#"
-                                   role="button"
-                                   aria-haspopup="true"
-                                   aria-expanded="false">
-                                    {% for season in seasons %}
-                                        {% if season.0 == current_season %}{{ season.1 }}{% endif %}
-                                    {% endfor %}
-                                </a>
-                                <div class="dropdown-menu">
-                                    {% for season in seasons %}
-                                        <a class="dropdown-item {% if season.0 == current_season %}active{% endif %}"
-                                           href="{{ request.path }}?season={{ season.0 }}&default=toty">{{ season.1 }}</a>
-                                    {% endfor %}
-                                </div>
+
+
+
+<div class="card m-lg-5 mt-2 m-1">
+    <div class="card-body">
+        <div class="mdc-tab-bar" role="tablist">
+            <div class="mdc-tab-scroller">
+                <div class="mdc-tab-scroller__scroll-area">
+                    <div class="mdc-tab-scroller__scroll-content">
+                        <button class="mdc-tab{% if default == 'toty' %} mdc-tab--active{% endif %}" role="tab" aria-selected="{% if default == 'toty' %}true{% else %}false{% endif %}" tabindex="{% if default == 'toty' %}0{% else %}-1{% endif %}" id="toty-tab" aria-controls="toty-panel">
+                            <span class="mdc-tab__content">
+                                <span class="mdc-tab__text-label">TOTY</span>
+                            </span>
+                            <span class="mdc-tab-indicator{% if default == 'toty' %} mdc-tab-indicator--active{% endif %}">
+                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                            </span>
+                            <span class="mdc-tab__ripple"></span>
+                        </button>
+                        <button class="mdc-tab{% if default == 'soty' %} mdc-tab--active{% endif %}" role="tab" aria-selected="{% if default == 'soty' %}true{% else %}false{% endif %}" tabindex="{% if default == 'soty' %}0{% else %}-1{% endif %}" id="soty-tab" aria-controls="soty-panel">
+                            <span class="mdc-tab__content">
+                                <span class="mdc-tab__text-label">SOTY</span>
+                            </span>
+                            <span class="mdc-tab-indicator{% if default == 'soty' %} mdc-tab-indicator--active{% endif %}">
+                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                            </span>
+                            <span class="mdc-tab__ripple"></span>
+                        </button>
+                        {% if render_noty %}
+                        <button class="mdc-tab{% if default == 'noty' %} mdc-tab--active{% endif %}" role="tab" aria-selected="{% if default == 'noty' %}true{% else %}false{% endif %}" tabindex="{% if default == 'noty' %}0{% else %}-1{% endif %}" id="noty-tab" aria-controls="noty-panel">
+                            <span class="mdc-tab__content">
+                                <span class="mdc-tab__text-label">NOTY</span>
+                            </span>
+                            <span class="mdc-tab-indicator{% if default == 'noty' %} mdc-tab-indicator--active{% endif %}">
+                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                            </span>
+                            <span class="mdc-tab__ripple"></span>
+                        </button>
+                        {% endif %}
+                        <button class="mdc-tab{% if default == 'coty' %} mdc-tab--active{% endif %}" role="tab" aria-selected="{% if default == 'coty' %}true{% else %}false{% endif %}" tabindex="{% if default == 'coty' %}0{% else %}-1{% endif %}" id="coty-tab" aria-controls="coty-panel">
+                            <span class="mdc-tab__content">
+                                <span class="mdc-tab__text-label">COTY</span>
+                            </span>
+                            <span class="mdc-tab-indicator{% if default == 'coty' %} mdc-tab-indicator--active{% endif %}">
+                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                            </span>
+                            <span class="mdc-tab__ripple"></span>
+                        </button>
+                        {% if using_online_quals %}
+                        <button class="mdc-tab{% if default == 'online_quals' %} mdc-tab--active{% endif %}" role="tab" aria-selected="{% if default == 'online_quals' %}true{% else %}false{% endif %}" tabindex="{% if default == 'online_quals' %}0{% else %}-1{% endif %}" id="online-tab" aria-controls="online-panel">
+                            <span class="mdc-tab__content">
+                                <span class="mdc-tab__text-label">Online Qualifiers</span>
+                            </span>
+                            <span class="mdc-tab-indicator{% if default == 'online_quals' %} mdc-tab-indicator--active{% endif %}">
+                                <span class="mdc-tab-indicator__content mdc-tab-indicator__content--underline"></span>
+                            </span>
+                            <span class="mdc-tab__ripple"></span>
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div role="tabpanel" id="toty-panel" aria-labelledby="toty-tab" {% if default != 'toty' %}hidden{% endif %}>
+            {% cache None toty current_season %}
+            <div class="season-selector mdc-menu-surface--anchor">
+                <span class="season-label">Season:</span>
+                <button id="season-button" class="mdc-button" aria-haspopup="menu" aria-controls="season-menu">
+                    Select season
+                </button>
+
+                <div class="mdc-menu mdc-menu-surface" id="season-menu">
+                    <ul class="mdc-list" role="menu" aria-orientation="vertical" tabindex="-1">
+                        <ul class="mdc-menu__selection-group">
+                            {% for season in seasons %}
+                            <li
+                                class="mdc-list-item {% if season.0 == current_season %}mdc-list-item--selected{% endif %}"
+                                role="menuitem"
+                                {% if season.0 == current_season %}aria-selected="true"{% endif %}
+                                onclick="window.location.href='{{ request.path }}?season={{ season.0 }}&default=toty'">
+                                <span class="mdc-list-item__ripple"></span>
+                                {% if season.0 == current_season %}
+                                <span class="mdc-list-item__graphic mdc-menu__selection-group-icon">
+                                    <i class="material-icons">check</i>
+                                </span>
+                                {% endif %}
+                                <span class="mdc-list-item__text">{{ season.1 }}</span>
                             </li>
+                            {% endfor %}
                         </ul>
-                    </h5>
-                    <table class="table table-bordered table-striped">
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <div class="table-responsive-wrapper">
+                    <div class="mdc-data-table">
+                        <div class="mdc-data-table__table-container">
+                            <table class="mdc-data-table__table" aria-label="TOTY Rankings">
+                            <thead>
+                                <tr class="mdc-data-table__header-row">
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Rank</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">School</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Debaters</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">Points</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">1st</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">2nd</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">3rd</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">4th</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">5th</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mdc-data-table__content">
+                                {% for team in toty %}
+                                    <tr class="mdc-data-table__row">
+                                        <td class="mdc-data-table__cell">
+                                            <span class="rank-chip">
+                                                {% if team.tied %}T-{% endif %}{{ team.place }}
+                                            </span>
+                                        </td>
+                                        <td class="mdc-data-table__cell">
+                                            <a href="{{ team.team.get_absolute_url }}" class="tournament-link">
+                                                {{ team.team.name }}
+                                            </a>
+                                        </td>
+                                        <td class="mdc-data-table__cell">{{ team.team.debaters_display|safe }}</td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            <span class="points-display">{{ team.points|number }}</span>
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not team.marker_one == 0 %}
+                                                {{ team.marker_one|number }} 
+                                                (<a href="{{ team.tournament_one.get_absolute_url }}" class="tournament-link">{{ team.tournament_one.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not team.marker_two == 0 %}
+                                                {{ team.marker_two|number }} 
+                                                (<a href="{{ team.tournament_two.get_absolute_url }}" class="tournament-link">{{ team.tournament_two.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not team.marker_three == 0 %}
+                                                {{ team.marker_three|number }} 
+                                                (<a href="{{ team.tournament_three.get_absolute_url }}" class="tournament-link">{{ team.tournament_three.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not team.marker_four == 0 %}
+                                                {{ team.marker_four|number }} 
+                                                (<a href="{{ team.tournament_four.get_absolute_url }}" class="tournament-link">{{ team.tournament_four.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not team.marker_five == 0 %}
+                                                {{ team.marker_five|number }} 
+                                                (<a href="{{ team.tournament_five.get_absolute_url }}" class="tournament-link">{{ team.tournament_five.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr class="mdc-data-table__row">
+                                        <td class="mdc-data-table__cell empty-state" colspan="9">
+                                            <p>No TOTY results available yet for this season</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+            {% endcache %}
+        </div>
+        
+        <div role="tabpanel" id="soty-panel" aria-labelledby="soty-tab" {% if default != 'soty' %}hidden{% endif %}>
+            {% cache None soty current_season %}
+            <div class="season-selector mdc-menu-surface--anchor">
+                <span class="season-label">Season:</span>
+                <button id="soty-season-button" class="mdc-button" aria-haspopup="menu" aria-controls="soty-season-menu">
+                    Select season
+                </button>
+
+                <div class="mdc-menu mdc-menu-surface" id="soty-season-menu">
+                    <ul class="mdc-list" role="menu" aria-orientation="vertical" tabindex="-1">
+                        <ul class="mdc-menu__selection-group">
+                            {% for season in seasons %}
+                            <li
+                                class="mdc-list-item {% if season.0 == current_season %}mdc-list-item--selected{% endif %}"
+                                role="menuitem"
+                                {% if season.0 == current_season %}aria-selected="true"{% endif %}
+                                onclick="window.location.href='{{ request.path }}?season={{ season.0 }}&default=soty'">
+                                <span class="mdc-list-item__ripple"></span>
+                                {% if season.0 == current_season %}
+                                <span class="mdc-list-item__graphic mdc-menu__selection-group-icon">
+                                    <i class="material-icons">check</i>
+                                </span>
+                                {% endif %}
+                                <span class="mdc-list-item__text">{{ season.1 }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <div class="table-responsive-wrapper">
+                    <div class="mdc-data-table">
+                        <div class="mdc-data-table__table-container">
+                            <table class="mdc-data-table__table" aria-label="SOTY Rankings">
+                            <thead>
+                                <tr class="mdc-data-table__header-row">
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Rank</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Debater</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">School</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">Points</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">1st</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">2nd</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">3rd</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">4th</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">5th</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">6th</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mdc-data-table__content">
+                                {% for speaker in soty %}
+                                    <tr class="mdc-data-table__row">
+                                        <td class="mdc-data-table__cell">
+                                            <span class="rank-chip">
+                                                {% if speaker.tied %}T-{% endif %}{{ speaker.place }}
+                                            </span>
+                                        </td>
+                                        <td class="mdc-data-table__cell">
+                                            <a href="{{ speaker.debater.get_absolute_url }}" class="tournament-link">
+                                                {{ speaker.debater.name }}
+                                            </a>
+                                        </td>
+                                        <td class="mdc-data-table__cell">
+                                            <a href="{{ speaker.debater.school.get_absolute_url }}" class="tournament-link">
+                                                {{ speaker.debater.school.name }}
+                                            </a>
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            <span class="points-display">{{ speaker.points|number }}</span>
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_one == 0 %}
+                                                {{ speaker.marker_one|number }} 
+                                                (<a href="{{ speaker.tournament_one.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_one.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_two == 0 %}
+                                                {{ speaker.marker_two|number }} 
+                                                (<a href="{{ speaker.tournament_two.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_two.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_three == 0 %}
+                                                {{ speaker.marker_three|number }} 
+                                                (<a href="{{ speaker.tournament_three.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_three.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_four == 0 %}
+                                                {{ speaker.marker_four|number }} 
+                                                (<a href="{{ speaker.tournament_four.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_four.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_five == 0 %}
+                                                {{ speaker.marker_five|number }} 
+                                                (<a href="{{ speaker.tournament_five.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_five.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_six == 0 %}
+                                                {{ speaker.marker_six|number }} 
+                                                (<a href="{{ speaker.tournament_six.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_six.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr class="mdc-data-table__row">
+                                        <td class="mdc-data-table__cell empty-state" colspan="10">
+                                            <p>No SOTY results available yet for this season</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+            {% endcache %}
+        </div>
+        
+        <div role="tabpanel" id="coty-panel" aria-labelledby="coty-tab" {% if default != 'coty' %}hidden{% endif %}>
+            {% cache None coty current_season %}
+            <div class="season-selector mdc-menu-surface--anchor">
+                <span class="season-label">Season:</span>
+                <button id="coty-season-button" class="mdc-button" aria-haspopup="menu" aria-controls="coty-season-menu">
+                    Select season
+                </button>
+
+                <div class="mdc-menu mdc-menu-surface" id="coty-season-menu">
+                    <ul class="mdc-list" role="menu" aria-orientation="vertical" tabindex="-1">
+                        <ul class="mdc-menu__selection-group">
+                            {% for season in seasons %}
+                            <li
+                                class="mdc-list-item {% if season.0 == current_season %}mdc-list-item--selected{% endif %}"
+                                role="menuitem"
+                                {% if season.0 == current_season %}aria-selected="true"{% endif %}
+                                onclick="window.location.href='{{ request.path }}?season={{ season.0 }}&default=coty'">
+                                <span class="mdc-list-item__ripple"></span>
+                                {% if season.0 == current_season %}
+                                <span class="mdc-list-item__graphic mdc-menu__selection-group-icon">
+                                    <i class="material-icons">check</i>
+                                </span>
+                                {% endif %}
+                                <span class="mdc-list-item__text">{{ season.1 }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <div style="margin-bottom: 1rem;">
+                    <button class="mdc-button mdc-button--outlined" id="expandAll">
+                        <span class="mdc-button__ripple"></span>
+                        <span class="mdc-button__label">Expand / Collapse All</span>
+                    </button>
+                </div>
+                
+                <div class="table-responsive-wrapper">
+                    <div class="mdc-data-table">
+                        <div class="mdc-data-table__table-container">
+                            <table class="mdc-data-table__table coty-table" aria-label="COTY Rankings">
+                            <thead>
+                                <tr class="mdc-data-table__header-row">
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Rank</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">School</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">Points</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Debater (qualified for National Championship*)</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">Points (Contribution)</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Auto-Quals</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mdc-data-table__content">
+                                {% for school in coty %}
+                                    <tr class="mdc-data-table__row">
+                                        <td class="mdc-data-table__cell">
+                                            <span class="rank-chip">
+                                                {% if school.tied %}T-{% endif %}{{ school.place }}
+                                            </span>
+                                        </td>
+                                        <td class="mdc-data-table__cell">
+                                            <a href="{{ school.school.get_absolute_url }}?season={{ request.GET.season }}" class="tournament-link">
+                                                {{ school.school.name }}
+                                            </a>
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            <span class="points-display">{{ school.points|number }}</span>
+                                        </td>
+                                        <td class="mdc-data-table__cell" colspan="3">
+                                            <button class="mdc-button mdc-button--unelevated"
+                                                data-toggle="collapse"
+                                                data-target="#coty_{{ forloop.counter }}">
+                                                <span class="mdc-button__ripple"></span>
+                                                <span class="mdc-button__label">Click to expand / collapse</span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% for debater in school.school|relevant_debaters:current_season %}
+                                    <tr id="coty_{{ forloop.parentloop.counter }}_{{ forloop.counter }}" class="collapse coty-debater-row mdc-data-table__row">
+                                        {% if forloop.first %}
+                                        <td class="mdc-data-table__cell" colspan="3" rowspan="{{ forloop.revcounter }}" style="border-right: 2px solid var(--md-sys-color-outline-variant, rgba(0,0,0,0.12));"></td>
+                                        {% endif %}
+                                        <td class="mdc-data-table__cell">
+                                            <a href="{{ debater.debater.get_absolute_url }}?season={{ current_season }}" 
+                                               class="tournament-link {% if debater.qualled %}qualified-debater{% endif %}">
+                                                {{ debater.debater.name }}{% if debater.qualled %} *{% endif %}
+                                            </a>
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">{{ debater.points|number }} ({{ debater|qual_contribution:current_season|number }})</td>
+                                        <td class="mdc-data-table__cell">{{ debater.debater|qual_display:current_season }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% empty %}
+                                    <tr class="mdc-data-table__row">
+                                        <td class="mdc-data-table__cell empty-state" colspan="6">
+                                            <p>No COTY results available yet for this season</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+            {% endcache %}
+        </div>
+        
+        {% if render_noty %}
+        <div role="tabpanel" id="noty-panel" aria-labelledby="noty-tab" {% if default != 'noty' %}hidden{% endif %}>
+            {% cache None noty current_season %}
+            <div class="season-selector mdc-menu-surface--anchor">
+                <span class="season-label">Season:</span>
+                <button id="noty-season-button" class="mdc-button" aria-haspopup="menu" aria-controls="noty-season-menu">
+                    Select season
+                </button>
+
+                <div class="mdc-menu mdc-menu-surface" id="noty-season-menu">
+                    <ul class="mdc-list" role="menu" aria-orientation="vertical" tabindex="-1">
+                        <ul class="mdc-menu__selection-group">
+                            {% for season in seasons %}
+                            <li
+                                class="mdc-list-item {% if season.0 == current_season %}mdc-list-item--selected{% endif %}"
+                                role="menuitem"
+                                {% if season.0 == current_season %}aria-selected="true"{% endif %}
+                                onclick="window.location.href='{{ request.path }}?season={{ season.0 }}&default=noty'">
+                                <span class="mdc-list-item__ripple"></span>
+                                {% if season.0 == current_season %}
+                                <span class="mdc-list-item__graphic mdc-menu__selection-group-icon">
+                                    <i class="material-icons">check</i>
+                                </span>
+                                {% endif %}
+                                <span class="mdc-list-item__text">{{ season.1 }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <div class="table-responsive-wrapper">
+                    <div class="mdc-data-table">
+                        <div class="mdc-data-table__table-container">
+                            <table class="mdc-data-table__table" aria-label="NOTY Rankings">
+                            <thead>
+                                <tr class="mdc-data-table__header-row">
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Rank</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">Debater</th>
+                                    <th class="mdc-data-table__header-cell" role="columnheader" scope="col">School</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">Points</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">1st</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">2nd</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">3rd</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">4th</th>
+                                    <th class="mdc-data-table__header-cell mdc-data-table__header-cell--numeric" role="columnheader" scope="col">5th</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mdc-data-table__content">
+                                {% for speaker in noty %}
+                                    <tr class="mdc-data-table__row">
+                                        <td class="mdc-data-table__cell">
+                                            <span class="rank-chip">
+                                                {% if speaker.tied %}T-{% endif %}{{ speaker.place }}
+                                            </span>
+                                        </td>
+                                        <td class="mdc-data-table__cell">
+                                            <a href="{% url 'core:debater_detail' pk=speaker.debater.id %}" class="tournament-link">
+                                                {{ speaker.debater.name }}
+                                            </a>
+                                        </td>
+                                        <td class="mdc-data-table__cell">
+                                            <a href="{% url 'core:school_detail' pk=speaker.debater.school.id %}" class="tournament-link">
+                                                {{ speaker.debater.school.name }}
+                                            </a>
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            <span class="points-display">{{ speaker.points|number }}</span>
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_one == 0 %}
+                                                {{ speaker.marker_one|number }} 
+                                                (<a href="{{ speaker.tournament_one.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_one.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_two == 0 %}
+                                                {{ speaker.marker_two|number }} 
+                                                (<a href="{{ speaker.tournament_two.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_two.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_three == 0 %}
+                                                {{ speaker.marker_three|number }} 
+                                                (<a href="{{ speaker.tournament_three.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_three.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_four == 0 %}
+                                                {{ speaker.marker_four|number }} 
+                                                (<a href="{{ speaker.tournament_four.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_four.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                        <td class="mdc-data-table__cell mdc-data-table__cell--numeric">
+                                            {% if not speaker.marker_five == 0 %}
+                                                {{ speaker.marker_five|number }} 
+                                                (<a href="{{ speaker.tournament_five.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_five.display }}</a>)
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% empty %}
+                                    <tr class="mdc-data-table__row">
+                                        <td class="mdc-data-table__cell empty-state" colspan="9">
+                                            <p>No NOTY results available yet for this season</p>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            </div>
+            {% endcache %}
+        </div>
+        {% endif %}
+        
+        {% if using_online_quals %}
+        <div role="tabpanel" id="online-panel" aria-labelledby="online-tab" {% if default != 'online_quals' %}hidden{% endif %}>
+            {% cache None online_quals current_season %}
+            <div class="season-selector mdc-menu-surface--anchor">
+                <span class="season-label">Season:</span>
+                <button id="online-season-button" class="mdc-button" aria-haspopup="menu" aria-controls="online-season-menu">
+                    Select season
+                </button>
+
+                <div class="mdc-menu mdc-menu-surface" id="online-season-menu">
+                    <ul class="mdc-list" role="menu" aria-orientation="vertical" tabindex="-1">
+                        <ul class="mdc-menu__selection-group">
+                            {% for season in online_seasons %}
+                            <li
+                                class="mdc-list-item {% if season.0 == current_season %}mdc-list-item--selected{% endif %}"
+                                role="menuitem"
+                                {% if season.0 == current_season %}aria-selected="true"{% endif %}
+                                onclick="window.location.href='{{ request.path }}?season={{ season.0 }}&default=online_quals'">
+                                <span class="mdc-list-item__ripple"></span>
+                                {% if season.0 == current_season %}
+                                <span class="mdc-list-item__graphic mdc-menu__selection-group-icon">
+                                    <i class="material-icons">check</i>
+                                </span>
+                                {% endif %}
+                                <span class="mdc-list-item__text">{{ season.1 }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="content-area">
+                <div class="table-responsive-wrapper">
+                    <table class="modern-table">
                         <thead>
-                            <th scope="col" width="5%">#</th>
-                            <th scope="col">School</th>
-                            <th scope="col">Debaters</th>
-                            <th scope="col">Points</th>
-                            <th scope="col">
-                                <center>1</center>
-                            </th>
-                            <th scope="col">
-                                <center>2</center>
-                            </th>
-                            <th scope="col">
-                                <center>3</center>
-                            </th>
-                            <th scope="col">
-                                <center>4</center>
-                            </th>
-                            <th scope="col">
-                                <center>5</center>
-                            </th>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Debater</th>
+                                <th>School</th>
+                                <th>Points</th>
+                                <th>Qualified</th>
+                                <th>1st</th>
+                                <th>2nd</th>
+                                <th>3rd</th>
+                                <th>4th</th>
+                                <th>5th</th>
+                                <th>6th</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            {% for team in toty %}
+                            {% for speaker in online_quals %}
                                 <tr>
                                     <td>
-                                        {% if team.tied %}T-{% endif %}
-                                        {{ team.place }}
+                                        <span class="rank-badge">
+                                            {% if speaker.tied %}T-{% endif %}{{ speaker.place }}
+                                        </span>
                                     </td>
                                     <td>
-                                        <a href="{{ team.team.get_absolute_url }}">{{ team.team.name }}</a>
+                                        <a href="{% url 'core:debater_detail' pk=speaker.debater.id %}" class="tournament-link">
+                                            {{ speaker.debater.name }}
+                                        </a>
                                     </td>
-                                    <td>{{ team.team.debaters_display|safe }}</td>
-                                    <td>{{ team.points|number }}</td>
                                     <td>
-                                        {% if not team.marker_one == 0 %}
-                                            {{ team.marker_one|number }} (<a href="{{ team.tournament_one.get_absolute_url }}">{{ team.tournament_one.display }}</a>)
+                                        <a href="{% url 'core:school_detail' pk=speaker.debater.school.id %}" class="tournament-link">
+                                            {{ speaker.debater.school.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="points-display">{{ speaker.points|number }}</span>
+                                    </td>
+                                    <td>
+                                        {% if speaker.points >= online_qual_bar %}
+                                            <span class="text-success" style="font-weight: bold;">✓</span>
+                                        {% else %}
+                                            <span class="text-danger">✗</span>
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if not team.marker_two == 0 %}
-                                            {{ team.marker_two|number }} (<a href="{{ team.tournament_two.get_absolute_url }}">{{ team.tournament_two.display }}</a>)
+                                        {% if not speaker.marker_one == 0 %}
+                                            {{ speaker.marker_one|number }} 
+                                            (<a href="{{ speaker.tournament_one.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_one.display }}</a>)
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if not team.marker_three == 0 %}
-                                            {{ team.marker_three|number }} (<a href="{{ team.tournament_three.get_absolute_url }}">{{ team.tournament_three.display }}</a>)
+                                        {% if not speaker.marker_two == 0 %}
+                                            {{ speaker.marker_two|number }} 
+                                            (<a href="{{ speaker.tournament_two.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_two.display }}</a>)
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if not team.marker_four == 0 %}
-                                            {{ team.marker_four|number }} (<a href="{{ team.tournament_four.get_absolute_url }}">{{ team.tournament_four.display }}</a>)
+                                        {% if not speaker.marker_three == 0 %}
+                                            {{ speaker.marker_three|number }} 
+                                            (<a href="{{ speaker.tournament_three.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_three.display }}</a>)
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if not team.marker_five == 0 %}
-                                            {{ team.marker_five|number }} (<a href="{{ team.tournament_five.get_absolute_url }}">{{ team.tournament_five.display }}</a>)
+                                        {% if not speaker.marker_four == 0 %}
+                                            {{ speaker.marker_four|number }} 
+                                            (<a href="{{ speaker.tournament_four.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_four.display }}</a>)
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if not speaker.marker_five == 0 %}
+                                            {{ speaker.marker_five|number }} 
+                                            (<a href="{{ speaker.tournament_five.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_five.display }}</a>)
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if not speaker.marker_six == 0 %}
+                                            {{ speaker.marker_six|number }} 
+                                            (<a href="{{ speaker.tournament_six.get_absolute_url }}" class="tournament-link">{{ speaker.tournament_six.display }}</a>)
                                         {% endif %}
                                     </td>
                                 </tr>
                             {% empty %}
                                 <tr>
-                                    <td colspan="9" class="shaded">
-                                        <center>There are no TOTY results yet</center>
+                                    <td colspan="11" class="empty-state">
+                                        <p>No Online Qualifier results available yet for this season</p>
                                     </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
-                {% endcache %}
+                </div>
             </div>
-            <div class="tab-pane fade table-responsive {% if default == 'soty' %}active show{% endif %}"
-                 id="soty"
-                 role="tabpanel">
-                {% cache None soty current_season %}
-                <h5>
-                    <ul class="nav nav-pills float-right pb-3" id="oty_pills" roll="tablist">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle active"
-                               data-toggle="dropdown"
-                               href="#"
-                               role="button"
-                               aria-haspopup="true"
-                               aria-expanded="false">
-                                {% for season in seasons %}
-                                    {% if season.0 == current_season %}{{ season.1 }}{% endif %}
-                                {% endfor %}
-                            </a>
-                            <div class="dropdown-menu">
-                                {% for season in seasons %}
-                                    <a class="dropdown-item {% if season.0 == current_season %}active{% endif %}"
-                                       href="{{ request.path }}?season={{ season.0 }}&default=soty">{{ season.1 }}</a>
-                                {% endfor %}
-                            </div>
-                        </li>
-                    </ul>
-                </h5>
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <th scope="col">#</th>
-                        <th scope="col">Debater</th>
-                        <th scope="col">School</th>
-                        <th scope="col">Points</th>
-                        <th scop="col">
-                            <center>1</center>
-                        </th>
-                        <th scop="col">
-                            <center>2</center>
-                        </th>
-                        <th scop="col">
-                            <center>3</center>
-                        </th>
-                        <th scop="col">
-                            <center>4</center>
-                        </th>
-                        <th scop="col">
-                            <center>5</center>
-                        </th>
-                        <th scop="col">
-                            <center>6</center>
-                        </th>
-                    </thead>
-                    <tbody>
-                        {% for speaker in soty %}
-                            <tr>
-                                <td>
-                                    {% if speaker.tied %}T-{% endif %}
-                                    {{ speaker.place }}
-                                </td>
-                                <td>
-                                    <a href="{% url 'core:debater_detail' pk=speaker.debater.id %}">{{ speaker.debater.name }}</a>
-                                </td>
-                                <td>
-                                    <a href={% url 'core:school_detail' pk=speaker.debater.school.id %}>{{ speaker.debater.school.name }}</a>
-                                </td>
-                                <td>{{ speaker.points|number }}</td>
-                                <td>
-                                    {% if not speaker.marker_one == 0 %}
-                                        {{ speaker.marker_one|number }} (<a href="{{ speaker.tournament_one.get_absolute_url }}">{{ speaker.tournament_one.display }}</a>)
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if not speaker.marker_two == 0 %}
-                                        {{ speaker.marker_two|number }} (<a href="{{ speaker.tournament_two.get_absolute_url }}">{{ speaker.tournament_two.display }}</a>)
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if not speaker.marker_three == 0 %}
-                                        {{ speaker.marker_three|number }} (<a href="{{ speaker.tournament_three.get_absolute_url }}">{{ speaker.tournament_three.display }}</a>)
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if not speaker.marker_four == 0 %}
-                                        {{ speaker.marker_four|number }} (<a href="{{ speaker.tournament_four.get_absolute_url }}">{{ speaker.tournament_four.display }}</a>)
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if not speaker.marker_five == 0 %}
-                                        {{ speaker.marker_five|number }} (<a href="{{ speaker.tournament_five.get_absolute_url }}">{{ speaker.tournament_five.display }}</a>)
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if not speaker.marker_six == 0 %}
-                                        {{ speaker.marker_six|number }} (<a href="{{ speaker.tournament_six.get_absolute_url }}">{{ speaker.tournament_six.display }}</a>)
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% empty %}
-                            <tr>
-                                <td colspan="10" class="shaded">
-                                    <center>There are no SOTY results yet</center>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
             {% endcache %}
         </div>
-        <div class="tab-pane fade table-responsive {% if default == 'coty' %}active show{% endif %}"
-             id="coty"
-             role="tabpanel">
-            {% cache None coty current_season %}
-            <h5>
-                <a class="btn btn-primary float-left nav-link" href="" id="expandAll">Expand / Collapse All</a>
-                <ul class="nav nav-pills float-right pb-3" id="oty_pills" roll="tablist">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle active"
-                           data-toggle="dropdown"
-                           href="#"
-                           role="button"
-                           aria-haspopup="true"
-                           aria-expanded="false">
-                            {% for season in seasons %}
-                                {% if season.0 == current_season %}{{ season.1 }}{% endif %}
-                            {% endfor %}
-                        </a>
-                        <div class="dropdown-menu">
-                            {% for season in seasons %}
-                                <a class="dropdown-item {% if season.0 == current_season %}active{% endif %}"
-                                   href="{{ request.path }}?season={{ season.0 }}&default=coty">{{ season.1 }}</a>
-                            {% endfor %}
-                        </div>
-                    </li>
-                </ul>
-            </h5>
-            <table class="table table-bordered">
-                <thead>
-                    <th scope="col" width="10%">#</th>
-                    <th scope="col" width="20%">School</th>
-                    <th scope="col" width="10%">Points</th>
-                    <th scope="col" width="30%">Debater (qualified for the National Championship*)</th>
-                    <th scope="col" width="10%">Points (Contribution)</th>
-                    <th scope="col" width="20%">Auto-Quals</th>
-                </thead>
-                {% for school in coty %}
-                    <tbody>
-                        <tr {% if not forloop.counter|divisibleby:"2" %}class="shaded"{% endif %}>
-                            <td>
-                                {% if school.tied %}T-{% endif %}
-                                {{ school.place }}
-                            </td>
-                            <td>
-                                <a href="{{ school.school.get_absolute_url }}?season={{ request.GET.season }}">{{ school.school.name }}</a>
-                            </td>
-                            <td>{{ school.points|number }}</td>
-                            <td colspan="3">
-                                <a href="#"
-                                   class="clickable"
-                                   data-toggle="collapse"
-                                   data-newtarget="#coty_{{ forloop.counter }}"
-                                   style="cursor: pointer">Click to expand / collapse</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody id="coty_{{ forloop.counter }}" class="collapse">
-                        {% for debater in school.school|relevant_debaters:current_season %}
-                            <tr>
-                                {% if forloop.first %}<td colspan="3" rowspan="{{ forloop.revcounter }}"></td>{% endif %}
-                                <td class="short-row">
-                                    {% if debater.qualled %}<b>{% endif %}
-                                        <a href="{{ debater.debater.get_absolute_url }}?season={{ current_season }}">{{ debater.debater.name }}</a>
-                                        {% if debater.qualled %}*</b>{% endif %}
-                                </td>
-                                <td class="short-row">{{ debater.points|number }} ({{ debater|qual_contribution:current_season|number }})</td>
-                                <td class="short-row">{{ debater.debater|qual_display:current_season }}</td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                {% empty %}
-                    <tr>
-                        <td colspan="6" class="shaded">
-                            <center>There are no COTY results yet</center>
-                        </td>
-                    </tr>
-                {% endfor %}
-        </table>
-    {% endcache %}
+        {% endif %}
+    </div>
 </div>
-<div class="tab-pane fade table-responsive {% if default == 'noty' %}active show{% endif %}"
-     id="noty"
-     role="tabpanel">
-    {% cache None noty current_season %}
-    <h5>
-        <ul class="nav nav-pills float-right pb-3" id="oty_pills" roll="tablist">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle active"
-                   data-toggle="dropdown"
-                   href="#"
-                   role="button"
-                   aria-haspopup="true"
-                   aria-expanded="false">
-                    {% for season in seasons %}
-                        {% if season.0 == current_season %}{{ season.1 }}{% endif %}
-                    {% endfor %}
-                </a>
-                <div class="dropdown-menu">
-                    {% for season in seasons %}
-                        <a class="dropdown-item {% if season.0 == current_season %}active{% endif %}"
-                           href="{{ request.path }}?season={{ season.0 }}&default=noty">{{ season.1 }}</a>
-                    {% endfor %}
-                </div>
-            </li>
-        </ul>
-    </h5>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <th scope="col">#</th>
-            <th scope="col">Debater</th>
-            <th scope="col">School</th>
-            <th scope="col">Points</th>
-            <th scope="col">
-                <center>1</center>
-            </th>
-            <th scope="col">
-                <center>2</center>
-            </th>
-            <th scope="col">
-                <center>3</center>
-            </th>
-            <th scope="col">
-                <center>4</center>
-            </th>
-            <th scope="col">
-                <center>5</center>
-            </th>
-        </thead>
-        <tbody>
-            {% for speaker in noty %}
-                <tr>
-                    <td>
-                        {% if speaker.tied %}T-{% endif %}
-                        {{ speaker.place }}
-                    </td>
-                    <td>
-                        <a href="{% url 'core:debater_detail' pk=speaker.debater.id %}">{{ speaker.debater.name }}</a>
-                    </td>
-                    <td>
-                        <a href={% url 'core:school_detail' pk=speaker.debater.school.id %}>{{ speaker.debater.school.name }}</a>
-                    </td>
-                    <td>{{ speaker.points|number }}</td>
-                    <td>
-                        {% if not speaker.marker_one == 0 %}
-                            {{ speaker.marker_one|number }} (<a href="{{ speaker.tournament_one.get_absolute_url }}">{{ speaker.tournament_one.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_two == 0 %}
-                            {{ speaker.marker_two|number }} (<a href="{{ speaker.tournament_two.get_absolute_url }}">{{ speaker.tournament_two.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_three == 0 %}
-                            {{ speaker.marker_three|number }} (<a href="{{ speaker.tournament_three.get_absolute_url }}">{{ speaker.tournament_three.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_four == 0 %}
-                            {{ speaker.marker_four|number }} (<a href="{{ speaker.tournament_four.get_absolute_url }}">{{ speaker.tournament_four.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_five == 0 %}
-                            {{ speaker.marker_five|number }} (<a href="{{ speaker.tournament_five.get_absolute_url }}">{{ speaker.tournament_five.display }}</a>)
-                        {% endif %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="9" class="shaded">
-                        <center>There are no NOTY results yet</center>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% endcache %}
-</div>
-<div class="tab-pane fade table-responsive {% if default == 'online_quals' %}active show{% endif %}"
-     id="online_quals"
-     role="tabpanel">
-    {% cache None online_quals current_season %}
-    <h5>
-        <ul class="nav nav-pills float-right pb-3" id="oty_pills" roll="tablist">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle active"
-                   data-toggle="dropdown"
-                   href="#"
-                   role="button"
-                   aria-haspopup="true"
-                   aria-expanded="false">
-                    {% for season in seasons %}
-                        {% if season.0 == current_season %}{{ season.1 }}{% endif %}
-                    {% endfor %}
-                </a>
-                <div class="dropdown-menu">
-                    {% for season in online_seasons %}
-                        <a class="dropdown-item {% if season.0 == current_season %}active{% endif %}"
-                           href="{{ request.path }}?season={{ season.0 }}&default=online_quals">{{ season.1 }}</a>
-                    {% endfor %}
-                </div>
-            </li>
-        </ul>
-    </h5>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <th scope="col">#</th>
-            <th scope="col">Debater</th>
-            <th scope="col">School</th>
-            <th scope="col">Points</th>
-            <th scope="col">Qualled</th>
-            <th scop="col">
-                <center>1</center>
-            </th>
-            <th scop="col">
-                <center>2</center>
-            </th>
-            <th scop="col">
-                <center>3</center>
-            </th>
-            <th scop="col">
-                <center>4</center>
-            </th>
-            <th scop="col">
-                <center>5</center>
-            </th>
-            <th scop="col">
-                <center>6</center>
-            </th>
-        </thead>
-        <tbody>
-            {% for speaker in online_quals %}
-                <tr>
-                    <td>
-                        {% if speaker.tied %}T-{% endif %}
-                        {{ speaker.place }}
-                    </td>
-                    <td>
-                        <a href="{% url 'core:debater_detail' pk=speaker.debater.id %}">{{ speaker.debater.name }}</a>
-                    </td>
-                    <td>
-                        <a href={% url 'core:school_detail' pk=speaker.debater.school.id %}>{{ speaker.debater.school.name }}</a>
-                    </td>
-                    <td>{{ speaker.points|number }}</td>
-                    <td>
-                        {% if speaker.points >= online_qual_bar %}*{% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_one == 0 %}
-                            {{ speaker.marker_one|number }} (<a href="{{ speaker.tournament_one.get_absolute_url }}">{{ speaker.tournament_one.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_two == 0 %}
-                            {{ speaker.marker_two|number }} (<a href="{{ speaker.tournament_two.get_absolute_url }}">{{ speaker.tournament_two.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_three == 0 %}
-                            {{ speaker.marker_three|number }} (<a href="{{ speaker.tournament_three.get_absolute_url }}">{{ speaker.tournament_three.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_four == 0 %}
-                            {{ speaker.marker_four|number }} (<a href="{{ speaker.tournament_four.get_absolute_url }}">{{ speaker.tournament_four.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_five == 0 %}
-                            {{ speaker.marker_five|number }} (<a href="{{ speaker.tournament_five.get_absolute_url }}">{{ speaker.tournament_five.display }}</a>)
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if not speaker.marker_six == 0 %}
-                            {{ speaker.marker_six|number }} (<a href="{{ speaker.tournament_six.get_absolute_url }}">{{ speaker.tournament_six.display }}</a>)
-                        {% endif %}
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="10" class="shaded">
-                        <center>There are no Online Qualifier Point results yet</center>
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-{% endcache %}
-</div>
-</div>
-</div>
-</div>
+
+<script>
+// Handle MDC tab navigation
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.mdc-tab');
+    const panels = document.querySelectorAll('[role="tabpanel"]');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Remove active state from all tabs
+            tabs.forEach(t => {
+                t.classList.remove('mdc-tab--active');
+                t.setAttribute('aria-selected', 'false');
+                t.setAttribute('tabindex', '-1');
+                const indicator = t.querySelector('.mdc-tab-indicator');
+                if (indicator) {
+                    indicator.classList.remove('mdc-tab-indicator--active');
+                }
+            });
+            // Hide all panels
+            panels.forEach(p => p.setAttribute('hidden', ''));
+            
+            // Activate clicked tab
+            this.classList.add('mdc-tab--active');
+            this.setAttribute('aria-selected', 'true');
+            this.setAttribute('tabindex', '0');
+            const indicator = this.querySelector('.mdc-tab-indicator');
+            if (indicator) {
+                indicator.classList.add('mdc-tab-indicator--active');
+            }
+            
+            // Show corresponding panel
+            const panelId = this.getAttribute('aria-controls');
+            const panel = document.getElementById(panelId);
+            if (panel) {
+                panel.removeAttribute('hidden');
+            }
+        });
+    });
+});
+</script>
+
 {% endblock content %}

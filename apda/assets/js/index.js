@@ -5,6 +5,13 @@ import "../css/app.scss";
 
 import "bootstrap-datepicker";
 
+import { MDCDataTable } from '@material/data-table';
+import { MDCCheckbox } from '@material/checkbox';
+import { MDCIconButtonToggle } from '@material/icon-button';
+import { MDCMenu } from '@material/menu';
+import { MDCTabBar } from '@material/tab-bar';
+import { MDCRipple } from '@material/ripple';
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie != '') {
@@ -86,3 +93,58 @@ function team_search() {
   }
 }
 
+// Initialize Material Design Components
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize data tables
+  const dataTable = document.querySelector('.mdc-data-table');
+  if (dataTable) {
+    new MDCDataTable(dataTable);
+  }
+
+  // Initialize checkboxes
+  const checkboxes = document.querySelectorAll('.mdc-checkbox');
+  checkboxes.forEach(checkbox => {
+    new MDCCheckbox(checkbox);
+  });
+
+  // Initialize icon buttons
+  const iconButtons = document.querySelectorAll('.mdc-icon-button');
+  iconButtons.forEach(iconButton => {
+    new MDCIconButtonToggle(iconButton);
+  });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Initialize all season menus
+  const menuConfigs = [
+    { menuId: 'season-menu', buttonId: 'season-button' },
+    { menuId: 'soty-season-menu', buttonId: 'soty-season-button' },
+    { menuId: 'coty-season-menu', buttonId: 'coty-season-button' },
+    { menuId: 'noty-season-menu', buttonId: 'noty-season-button' },
+    { menuId: 'online-season-menu', buttonId: 'online-season-button' }
+  ];
+
+  menuConfigs.forEach(config => {
+    const menuEl = document.getElementById(config.menuId);
+    const buttonEl = document.getElementById(config.buttonId);
+
+    if (menuEl && buttonEl) {
+      const menu = new MDCMenu(menuEl);
+      buttonEl.addEventListener('click', () => {
+        menu.open = !menu.open;
+      });
+    }
+  });
+
+  // Initialize tab bar
+  const tabBar = document.querySelector('.mdc-tab-bar');
+  if (tabBar) {
+    new MDCTabBar(tabBar);
+  }
+
+  // Initialize all buttons with ripple effect
+  const buttons = document.querySelectorAll('.mdc-button');
+  buttons.forEach(button => {
+    new MDCRipple(button);
+  });
+});

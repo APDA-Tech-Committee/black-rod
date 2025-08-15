@@ -5,6 +5,19 @@
         {% render_bundle 'main' %}
         <script src="https://kit.fontawesome.com/79126da965.js"
                 crossorigin="anonymous"></script>
+        <script type="importmap">
+    {
+      "imports": {
+        "@material/web/": "https://esm.run/@material/web/"
+      }
+    }
+  </script>
+  <script type="module">
+    import '@material/web/all.js';
+    import {styles as typescaleStyles} from '@material/web/typography/md-typescale-styles.js';
+
+    document.adoptedStyleSheets.push(typescaleStyles.styleSheet);
+  </script>
         <title>
             {% block title %}
                 APDA Results

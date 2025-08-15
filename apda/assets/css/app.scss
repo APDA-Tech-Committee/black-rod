@@ -1,11 +1,33 @@
+// Material Design Components imports
+@use "@material/checkbox/checkbox" as checkbox;
+@use "@material/icon-button/icon-button" as icon-button;
+@use "@material/data-table/data-table" as data-table;
+@use "@material/tab-bar/mdc-tab-bar";
+@use "@material/tab-scroller/mdc-tab-scroller";
+@use "@material/tab-indicator/mdc-tab-indicator";
+@use "@material/tab/mdc-tab";
+@use "@material/list/mdc-list";
+@use "@material/menu-surface/mdc-menu-surface";
+@use "@material/menu/mdc-menu";
+@use "@material/button/mdc-button";
+@use "@material/icon-button/mdc-icon-button";
+@import "~bootstrap/scss/bootstrap";
+
+// Include Material Design Components styles
+@include checkbox.core-styles;
+@include icon-button.core-styles;
+@include data-table.core-styles;
+@include data-table.theme-baseline;
+
 $font-size-base: .9rem;
 
 $theme-colors: (
-    "primary":#731DDD,
+    "primary":#045fb0,
     "danger": #580000,
     "success": #70A363,
     "secondary": #668586,
     "info": #E8E8E8,
+    "warning": #ffc107,
 );
 
 .table>tbody>tr>td {
@@ -51,7 +73,7 @@ $theme-colors: (
 
 .mittab-dashboard {
     .mittab-table-row:hover {
-        background-color: #f8f9fa !important;
+        background-color: lighten(map-get($theme-colors, "info"), 3%) !important;
         transform: translateY(-1px);
         transition: all 0.2s ease;
     }
@@ -59,7 +81,7 @@ $theme-colors: (
     .mittab-tournament-icon {
         width: 40px;
         height: 40px;
-        background: #007bff;
+        background: map-get($theme-colors, "primary");
         border-radius: 50%;
         display: flex;
         align-items: center;
@@ -85,13 +107,13 @@ $theme-colors: (
     }
     
     .mittab-btn-primary {
-        background: #007bff;
+        background: map-get($theme-colors, "primary");
         transition: all 0.2s ease;
         
         &:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(115, 29, 221, 0.3);
-            background: #731DDD;
+            box-shadow: 0 4px 8px rgba(map-get($theme-colors, "primary"), 0.3);
+            background: darken(map-get($theme-colors, "primary"), 10%);
         }
     }
     
@@ -108,12 +130,12 @@ $theme-colors: (
     border-radius: 8px;
     
     .rankings-warning {
-        border-left: 4px solid #ffc107;
+        border-left: 4px solid map-get($theme-colors, "warning");
     }
     
     .form-control:focus {
-        border-color: #731DDD;
-        box-shadow: 0 0 0 0.2rem rgba(115, 29, 221, 0.25);
+        border-color: map-get($theme-colors, "primary");
+        box-shadow: 0 0 0 0.2rem rgba(map-get($theme-colors, "primary"), 0.25);
     }
     
     .btn:hover:not(:disabled) {
@@ -121,4 +143,227 @@ $theme-colors: (
     }
 }
 
-@import "node_modules/bootstrap/scss/bootstrap";
+// Custom overrides for APDA styling
+.standings-container {
+    width: 90vw;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.tab-container {
+    background: var(--md-sys-color-surface-container, white);
+    border-radius: var(--md-sys-shape-corner-large, 16px);
+    margin-bottom: 2rem;
+}
+
+// Season selector positioning
+.season-selector {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1rem;
+    padding: 0 1rem;
+    
+    .season-label {
+        margin-right: 0.5rem;
+        align-self: center;
+        font-weight: 500;
+        color: map-get($theme-colors, "secondary");
+    }
+}
+
+// Consistent table styling across all tabs
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.mdc-data-table {
+    width: 100%;
+    min-width: 800px; // Ensures consistent minimum width
+}
+
+.mdc-data-table__table {
+    width: 100%;
+    table-layout: fixed; // Ensures consistent column widths
+}
+
+// Consistent column widths for first three columns (except COTY)
+.mdc-data-table__table:not(.coty-table) {
+    .mdc-data-table__header-cell:nth-child(1) {
+        width: 8%;
+        min-width: 60px;
+    }
+    
+    .mdc-data-table__header-cell:nth-child(2) {
+        width: 25%;
+        min-width: 150px;
+    }
+    
+    .mdc-data-table__header-cell:nth-child(3) {
+        width: 25%;
+        min-width: 150px;
+    }
+}
+
+// Special handling for COTY table columns
+.coty-table {
+    .mdc-data-table__header-cell:nth-child(1) {
+        width: 10%;
+    }
+    
+    .mdc-data-table__header-cell:nth-child(2) {
+        width: 20%;
+    }
+    
+    .mdc-data-table__header-cell:nth-child(3) {
+        width: 10%;
+    }
+    
+    .mdc-data-table__header-cell:nth-child(4) {
+        width: 30%;
+    }
+    
+    .mdc-data-table__header-cell:nth-child(5) {
+        width: 10%;
+    }
+    
+    .mdc-data-table__header-cell:nth-child(6) {
+        width: 20%;
+    }
+}
+
+// Text wrapping and overflow handling
+.mdc-data-table__cell {
+    white-space: normal !important;
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow: visible !important;
+    text-overflow: clip !important;
+    padding: 12px 16px;
+    vertical-align: top;
+}
+
+// Link styling using theme colors
+.tournament-link {
+    color: map-get($theme-colors, "primary");
+    text-decoration: none;
+    
+    &:hover {
+        color: darken(map-get($theme-colors, "primary"), 10%);
+        text-decoration: underline;
+    }
+}
+
+// Rank chip styling
+.rank-chip, .rank-badge {
+    background-color: map-get($theme-colors, "info");
+    color: map-get($theme-colors, "secondary");
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: inline-block;
+    min-width: 32px;
+    text-align: center;
+}
+
+// Points display styling
+.points-display {
+    font-weight: 600;
+    color: map-get($theme-colors, "primary");
+}
+
+// Qualified debater styling
+.qualified-debater {
+    color: map-get($theme-colors, "success") !important;
+    font-weight: 600;
+}
+
+// Empty state styling
+.empty-state {
+    text-align: center;
+    color: map-get($theme-colors, "secondary");
+    font-style: italic;
+    padding: 2rem;
+}
+
+// Modern table styling for Online Qualifiers
+.modern-table {
+    width: 100%;
+    min-width: 800px;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    
+    th, td {
+        padding: 12px 16px;
+        text-align: left;
+        border-bottom: 1px solid map-get($theme-colors, "info");
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow: visible;
+        text-overflow: clip;
+        vertical-align: top;
+    }
+    
+    th {
+        background-color: lighten(map-get($theme-colors, "info"), 5%);
+        font-weight: 600;
+        color: map-get($theme-colors, "secondary");
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+    
+    // Consistent column widths for Online Qualifiers
+    th:nth-child(1), td:nth-child(1) { width: 8%; min-width: 60px; }
+    th:nth-child(2), td:nth-child(2) { width: 25%; min-width: 150px; }
+    th:nth-child(3), td:nth-child(3) { width: 25%; min-width: 150px; }
+    th:nth-child(4), td:nth-child(4) { width: 10%; min-width: 80px; }
+    th:nth-child(5), td:nth-child(5) { width: 8%; min-width: 60px; }
+    
+    tr:hover {
+        background-color: lighten(map-get($theme-colors, "info"), 3%);
+    }
+}
+
+// Button styling using theme colors
+.mdc-button {
+    --mdc-theme-primary: #{map-get($theme-colors, "primary")};
+    
+    &:hover:not(:disabled) {
+        background-color: lighten(map-get($theme-colors, "primary"), 45%);
+    }
+}
+
+.mdc-button--unelevated {
+    background-color: map-get($theme-colors, "primary");
+    color: white;
+    
+    &:hover:not(:disabled) {
+        background-color: darken(map-get($theme-colors, "primary"), 10%);
+    }
+}
+
+.mdc-button--outlined {
+    border-color: map-get($theme-colors, "primary");
+    color: map-get($theme-colors, "primary");
+    
+    &:hover:not(:disabled) {
+        background-color: lighten(map-get($theme-colors, "primary"), 45%);
+    }
+}
+
+// Success and danger color overrides
+.text-success {
+    color: map-get($theme-colors, "success") !important;
+}
+
+.text-danger {
+    color: map-get($theme-colors, "danger") !important;
+}
+
+
