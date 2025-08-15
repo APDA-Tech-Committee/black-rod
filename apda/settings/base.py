@@ -123,17 +123,25 @@ if os.environ.get("ENV") == "development":
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
     }
-elif os.environ.get("ENV") == "production":
+if os.environ.get("ENV") == "production":
     DEFAULT_SEASON = '2024'
     CURRENT_SEASON = '2024'
+
     DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'standings',
-        'USER': 'rodda',
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD', ''),
-        'HOST': 'localhost',
-        'PORT': '',
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': os.environ['DATABASE_NAME'],
+            'USER': os.environ['DATABASE_USER'],
+            'PASSWORD': os.environ['DATABASE_PASSWORD'],
+            'HOST': os.environ['DATABASE_HOST'],
+            'PORT': os.environ.get('DATABASE_PORT', '5432'),
+        }
+    }
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
+            'LOCATION': os.environ['CACHE_LOCATION'],
         }
     }
     import sentry_sdk
@@ -144,13 +152,6 @@ elif os.environ.get("ENV") == "production":
         integrations=[DjangoIntegration()]
     )
     ALLOWED_HOSTS = ['50.116.54.146', 'results.apda.online']
-
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-            'LOCATION': '127.0.0.1:11211',
-        }
-    }
 
 
 # Password validation

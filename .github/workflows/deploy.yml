@@ -1,0 +1,74 @@
+name: Deploy to ECS
+
+on:
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  MEMCACHED_ID: blackrod-memcached
+  MEMCACHED_NODE_TYPE: cache.t3.micro
+  MEMCACHED_ENGINE_VERSION: 1.6.6
+  MEMCACHED_NUM_NODES: 1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Check Memcached
+        id: check-memcached
+        run: |
+          set +e
+          aws elasticache describe-cache-clusters \
+            --cache-cluster-id $MEMCACHED_ID \
+            --region $AWS_REGION > memcached.json 2>/dev/null
+          if grep -q "$MEMCACHED_ID" memcached.json; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Memcached if missing
+        if: steps.check-memcached.outputs.exists == 'false'
+        run: |
+          aws elasticache create-cache-cluster \
+            --cache-cluster-id $MEMCACHED_ID \
+            --engine memcached \
+            --cache-node-type $MEMCACHED_NODE_TYPE \
+            --num-cache-nodes $MEMCACHED_NUM_NODES \
+            --engine-version $MEMCACHED_ENGINE_VERSION \
+            --cache-subnet-group-name ${{ secrets.MEMCACHED_SUBNET_GROUP }} \
+            --security-group-ids ${{ secrets.MEMCACHED_SECURITY_GROUP }} \
+            --region $AWS_REGION
+          echo "Waiting for Memcached cluster to be available..."
+          aws elasticache wait cache-cluster-available \
+            --cache-cluster-id $MEMCACHED_ID \
+            --region $AWS_REGION
+
+      - name: Push Django secret key
+        run: |
+          aws secretsmanager create-secret \
+            --name blackrod-django \
+            --description "BlackRod Django secret key" \
+            --secret-string "{\"SECRET_KEY\":\"${{ secrets.DJANGO_SECRET_KEY }}\"}" \
+            --region $AWS_REGION || \
+          aws secretsmanager update-secret \
+            --secret-id blackrod-django \
+            --secret-string "{\"SECRET_KEY\":\"${{ secrets.DJANGO_SECRET_KEY }}\"}" \
+            --region $AWS_REGION
+
+      - name: Install AWS Copilot CLI
+        run: |
+          curl -Lo copilot https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux
+          chmod +x copilot
+          sudo mv copilot /usr/local/bin/copilot
+
+      - name: Deploy to ECS
+        run: copilot svc deploy --name blackrod-service --env production

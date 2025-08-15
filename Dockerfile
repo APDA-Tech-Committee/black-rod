@@ -1,6 +1,9 @@
-FROM python:3.8-slim
+FROM python:3.8-buster
 
 WORKDIR /app
+
+RUN sed -i 's|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list \
+ && sed -i '/security.debian.org/d' /etc/apt/sources.list
 
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -10,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+RUN curl -fsSL https://deb.nodesource.com/setup_10.x | bash - \
     && apt-get install -y nodejs
 
 COPY requirements.txt constraints.txt /app/
@@ -26,7 +29,6 @@ RUN npm run build
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=apda.settings.base
 
-RUN python manage.py migrate --noinput
-RUN python manage.py collectstatic --noinput
-
-CMD ["gunicorn", "apda.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3", "--timeout", "150"]
+COPY bin/entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]

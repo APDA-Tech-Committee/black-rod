@@ -1,0 +1,44 @@
+name: blackrod-service
+type: Load Balanced Web Service
+
+image:
+  build: ./Dockerfile
+  port: 8000
+
+cpu: 512
+memory: 1024
+count:
+  range:
+    min: 1
+    max: 4
+    spot_from: 2
+
+http:
+  path: '/'
+  healthcheck:
+    path: '/'
+    healthy_threshold: 2
+    unhealthy_threshold: 2
+    interval: 10s
+    timeout: 5s
+
+variables:
+  ENV: production
+  DEBUG: "0"
+  DATABASE_HOST: standingsdb.xxxxxx.us-east-1.rds.amazonaws.com
+  DATABASE_NAME: standings
+  DATABASE_USER: postgres
+  CACHE_LOCATION: blackrod-memcached.xxxxxx.cfg.use1.cache.amazonaws.com:11211
+
+secrets:
+  DATABASE_PASSWORD: ${DATABASE_SECRET_NAME}:password
+  SECRET_KEY: blackrod-django:SECRET_KEY
+
+deployment:
+  rolling: false
+  min_healthy_percent: 100
+  max_percent: 200
+
+environments:
+  production:
+    count: 2
