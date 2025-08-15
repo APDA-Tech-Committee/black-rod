@@ -25,10 +25,11 @@ http:
 variables:
   ENV: production
   DEBUG: "0"
-  DATABASE_HOST: standingsdb.xxxxxx.us-east-1.rds.amazonaws.com
-  DATABASE_NAME: standings
-  DATABASE_USER: postgres
-  CACHE_LOCATION: blackrod-memcached.xxxxxx.cfg.use1.cache.amazonaws.com:11211
+  DATABASE_HOST: ${DATABASE_HOST}
+  DATABASE_NAME: ${DATABASE_NAME}
+  DATABASE_USER: ${DATABASE_USER}
+  CACHE_LOCATION: ${CACHE_LOCATION}
+
 
 secrets:
   DATABASE_PASSWORD: ${DATABASE_SECRET_NAME}:password

@@ -28,7 +28,8 @@ jobs:
           set +e
           aws elasticache describe-cache-clusters \
             --cache-cluster-id $MEMCACHED_ID \
-            --region $AWS_REGION > memcached.json 2>/dev/null
+            --region $AWS_REGION \
+            --show-cache-node-info > memcached.json 2>/dev/null
           if grep -q "$MEMCACHED_ID" memcached.json; then
             echo "exists=true" >> $GITHUB_OUTPUT
           else
@@ -52,6 +53,17 @@ jobs:
             --cache-cluster-id $MEMCACHED_ID \
             --region $AWS_REGION
 
+      - name: Get Memcached endpoint
+        id: get-memcached-endpoint
+        run: |
+          CACHE_ENDPOINT=$(aws elasticache describe-cache-clusters \
+            --cache-cluster-id $MEMCACHED_ID \
+            --show-cache-node-info \
+            --region $AWS_REGION \
+            --query "CacheClusters[0].ConfigurationEndpoint.Address" \
+            --output text)
+          echo "CACHE_LOCATION=$CACHE_ENDPOINT:11211" >> $GITHUB_ENV
+
       - name: Push Django secret key
         run: |
           aws secretsmanager create-secret \
@@ -71,4 +83,13 @@ jobs:
           sudo mv copilot /usr/local/bin/copilot
 
       - name: Deploy to ECS
-        run: copilot svc deploy --name blackrod-service --env production
+        run: |
+          copilot svc deploy \
+            --name blackrod-service \
+            --env production \
+            --resource-tags owner=joey \
+            --override-env-vars \
+            DATABASE_HOST=${{ secrets.DATABASE_HOST }},\
+            DATABASE_NAME=${{ secrets.DATABASE_NAME }},\
+            DATABASE_USER=${{ secrets.DATABASE_USER }},\
+            CACHE_LOCATION=$CACHE_LOCATION
