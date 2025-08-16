@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  AWS_REGION: us-east-2
+  AWS_REGION: us-east-1
   MEMCACHED_ID: blackrod-memcached
   MEMCACHED_NODE_TYPE: cache.t3.micro
   MEMCACHED_ENGINE_VERSION: 1.6.6
