@@ -84,9 +84,8 @@ jobs:
 
       - name: Deploy to ECS
         run: |
-          copilot svc deploy \
-            --name blackrod-service \
-            --env production \
-            --resource-tags owner=joey \
-            --env-vars DATABASE_HOST=${{ secrets.DATABASE_HOST }},DATABASE_NAME=${{ secrets.DATABASE_NAME }},DATABASE_USER=${{ secrets.DATABASE_USER }},CACHE_LOCATION=${{ secrets.CACHE_LOCATION }}
-
+          export DATABASE_HOST=${{ secrets.DATABASE_HOST }}
+          export DATABASE_NAME=${{ secrets.DATABASE_NAME }}
+          export DATABASE_USER=${{ secrets.DATABASE_USER }}
+          export CACHE_LOCATION=$CACHE_LOCATION
+          copilot svc deploy --name blackrod-service --env production

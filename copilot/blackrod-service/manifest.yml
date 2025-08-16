@@ -1,6 +1,17 @@
 name: blackrod-service
 type: Load Balanced Web Service
 
+variables:
+  DATABASE_HOST: ${DATABASE_HOST}
+  DATABASE_NAME: ${DATABASE_NAME}
+  DATABASE_USER: ${DATABASE_USER}
+  CACHE_LOCATION: ${CACHE_LOCATION}
+
+secrets:
+  DATABASE_PASSWORD: ${DATABASE_SECRET_NAME}:password
+  SECRET_KEY: blackrod-django:SECRET_KEY
+
+
 image:
   build: ./Dockerfile
   port: 8000
