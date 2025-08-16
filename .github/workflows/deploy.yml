@@ -88,8 +88,5 @@ jobs:
             --name blackrod-service \
             --env production \
             --resource-tags owner=joey \
-            --override-env-vars \
-            DATABASE_HOST=${{ secrets.DATABASE_HOST }},\
-            DATABASE_NAME=${{ secrets.DATABASE_NAME }},\
-            DATABASE_USER=${{ secrets.DATABASE_USER }},\
-            CACHE_LOCATION=$CACHE_LOCATION
+            --env-vars DATABASE_HOST=${{ secrets.DATABASE_HOST }},DATABASE_NAME=${{ secrets.DATABASE_NAME }},DATABASE_USER=${{ secrets.DATABASE_USER }},CACHE_LOCATION=${{ secrets.CACHE_LOCATION }}
+
