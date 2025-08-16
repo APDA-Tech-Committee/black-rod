@@ -81,7 +81,15 @@ jobs:
           curl -Lo copilot-cli https://github.com/aws/copilot-cli/releases/latest/download/copilot-linux
           chmod +x copilot-cli
           sudo mv copilot-cli /usr/local/bin/copilot
-
+      - name: Ensure Copilot App/Env Exists
+        run: |
+          if ! copilot app show blackrod-app > /dev/null 2>&1; then
+            echo "Creating Copilot app..."
+            copilot app init blackrod-app
+            copilot env init --name production --region $AWS_REGION
+          else
+            echo "Copilot app already exists."
+          fi
       - name: Deploy to ECS
         run: |
           export DATABASE_HOST=${{ secrets.DATABASE_HOST }}
