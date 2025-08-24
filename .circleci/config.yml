@@ -53,6 +53,18 @@ jobs:
             pip install -r requirements.txt -c constraints.txt
             pip install pytest pytest-django pytest-cov
       - run:
+          name: Setup Node.js 10
+          command: |
+            curl -fsSL https://deb.nodesource.com/setup_10.x | bash -
+            apt-get install -y nodejs
+            node -v
+            npm -v
+      - run:
+          name: Build frontend
+          command: |
+            npm install
+            npm run build
+      - run:
           name: Run tests with coverage (excluding test dirs from coverage)
           command: |
             . venv/bin/activate
