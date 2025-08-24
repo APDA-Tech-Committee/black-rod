@@ -58,17 +58,24 @@ class ApdaOnlineModuleTests(TestCase):
 
     def test_oauth_integration_mock(self):
         """Test OAuth integration with mocked dependencies"""
-        # Use get_user_model() instead of direct User model import
+        # Simple test without complex mocking that can fail in different environments
         from django.contrib.auth import get_user_model
         User = get_user_model()
         
-        with patch.object(User.objects, 'get_or_create') as mock_get_or_create:
-            mock_get_or_create.return_value = (self.user, True)
-            # Test that mock can be called
-            result = User.objects.get_or_create(username="testuser")
-            self.assertEqual(result[0], self.user)
-            self.assertTrue(result[1])
-            self.assertTrue(mock_get_or_create.called)
+        # Test basic user creation and retrieval without mocking ORM methods
+        test_user = User.objects.create_user(
+            username="oauth_test_user", 
+            email="oauth@example.com", 
+            password="testpass123"
+        )
+        
+        # Verify the user was created
+        retrieved_user = User.objects.get(username="oauth_test_user")
+        self.assertEqual(retrieved_user.email, "oauth@example.com")
+        self.assertTrue(retrieved_user.is_active)
+        
+        # Clean up
+        test_user.delete()
 
     def test_social_auth_pipeline_if_available(self):
         """Test social auth pipeline functions if available"""
@@ -94,11 +101,22 @@ class ApdaOnlineModuleTests(TestCase):
 
     def test_user_profile_integration_mock(self):
         """Test user profile integration with mocking"""
-        with patch("django.contrib.auth.models.User.save") as mock_save:
-            self.user.first_name = "Test"
-            self.user.last_name = "User"
-            self.user.save()
-            self.assertEqual(self.user.first_name, "Test")
+        # Test user profile updates without complex mocking
+        original_first_name = self.user.first_name
+        original_last_name = self.user.last_name
+        
+        self.user.first_name = "Test"
+        self.user.last_name = "User"
+        self.user.save()
+        
+        # Verify the changes
+        self.assertEqual(self.user.first_name, "Test")
+        self.assertEqual(self.user.last_name, "User")
+        
+        # Restore original values
+        self.user.first_name = original_first_name
+        self.user.last_name = original_last_name
+        self.user.save()
 
     def test_oauth_permissions_and_scopes(self):
         """Test OAuth permissions and scopes handling"""
