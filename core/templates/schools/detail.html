@@ -27,11 +27,11 @@
 {% endblock detail_view %}
 {% block left_column %}
     {% if cotys|length > 0 %}
-        <div class="card mb-2">
+        <div class="card mb-2 shadow-lg rounded-l5">
             <div class="card-body">
                 <h5 class="card-title">COTY</h5>
                 <hr />
-                <table class="table table-bordered table-hover table-striped">
+                <table class="table table-hover">
                     <thead>
                         <th>Place</th>
                         <th>Season</th>
@@ -52,11 +52,11 @@
             </div>
         </div>
     {% endif %}
-    <div class="card mb-2">
+    <div class="card mb-2 shadow-lg rounded-l5">
         <div class="card-body">
             <h5 class="card-title">Hosted Tournaments</h5>
             <hr />
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table table-hover">
                 <thead>
                     <th>Name</th>
                     <th>Date</th>
@@ -85,7 +85,7 @@
     </div>
 {% endblock left_column %}
 {% block added_information_view %}
-    <div class="card">
+    <div class="card shadow-lg rounded-l5">
         <div class="card-body">
             <h5 class="card-title pb-2">
                 COTY Breakdown
@@ -111,7 +111,7 @@
                 </ul>
             </h5>
             <hr />
-            <table class="table table-bordered table-hover table-striped">
+            <table class="table table-hover">
                 <thead>
                     <th>ID</th>
                     <th>Debater</th>

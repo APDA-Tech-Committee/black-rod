@@ -103,6 +103,8 @@ WSGI_APPLICATION = "apda.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+DEFAULT_SEASON = '2024'
+CURRENT_SEASON = '2024'
 
 # Set defaults for non-production environments
 if os.environ.get("ENV") != "production":
@@ -229,7 +231,8 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
-ACCOUNT_USER_MODEL_USERNAME_FIELD = "username"
+ACCOUNT_USER_MODEL_USERNAME_FIELD = 'username'
+SOCIALACCOUNT_STORE_TOKENS = True
 
 # Basic allauth settings required for imports (test/dev only)
 if os.environ.get("ENV") != "production":
@@ -237,7 +240,7 @@ if os.environ.get("ENV") != "production":
     ACCOUNT_EMAIL_REQUIRED = False
     ACCOUNT_AUTHENTICATION_METHOD = "username"
 
-SOCIALACCOUNT_ADAPTER = "apdaonline.adapter.APDAOnlineAdapter"
+SOCIALACCOUNT_ADAPTER = 'apdaonline.adapter.APDAOnlineAdapter'
 SOCIALACCOUNT_PROVIDERS = {
     "apdaonline": {
         "APP": {
@@ -335,8 +338,6 @@ SUMMERNOTE_CONFIG = {
 # Season Settings
 OLDEST = 2004
 LATEST = 2025
-DEFAULT_SEASON = "2024"
-CURRENT_SEASON = "2024"
 
 
 SEASONS = tuple(

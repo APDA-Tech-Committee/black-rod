@@ -7,6 +7,7 @@ from core.forms import (
     NOTYForm,
     QUALForm,
     QualPointsForm,
+
     ReaffForm,
     SOTYForm,
     TOTYReaffForm,
@@ -16,6 +17,7 @@ from core.models import (
     NOTY,
     QUAL,
     QualPoints,
+    QualBar,
     Reaff,
     Round,
     RoundStats,
@@ -81,6 +83,18 @@ class TournamentAdmin(ImportExportModelAdmin):
     list_display = ["name"]
     list_filter = ["name"]
     search_fields = ["name"]
+
+
+
+class CustomUserAdmin(UserAdmin):
+    fieldsets = UserAdmin.fieldsets + (
+        ('Permissions', {'fields': ('can_view_private_videos',)}),
+    )
+    
+    list_display = UserAdmin.list_display + ('can_view_private_videos',)
+    
+    list_filter = UserAdmin.list_filter + ('can_view_private_videos',)
+
 
 
 class TeamAdmin(ImportExportModelAdmin):
@@ -242,6 +256,9 @@ class SiteSettingAdmin(admin.ModelAdmin):
     search_fields = ("key",)
     ordering = ("key",)
 
+class QualBarAdmin(admin.ModelAdmin):
+    list_display = ("season", "points")
+    search_fields = ("season",)
 
 class VideoAdmin(admin.ModelAdmin):
     list_display = ("tournament", "round", "pm", "lo", "mg", "mo", "permissions")
@@ -271,7 +288,7 @@ class VideoAdmin(admin.ModelAdmin):
     get_absolute_url.short_description = "Video URL"
 
 
-admin.site.register(User, UserAdmin)
+admin.site.register(User, CustomUserAdmin)
 admin.site.register(Round)
 admin.site.register(RoundStats)
 admin.site.register(SiteSetting, SiteSettingAdmin)
@@ -293,4 +310,6 @@ admin.site.register(TOTY, TOTYAdmin)
 admin.site.register(TOTYReaff, TOTYReaffAdmin)
 admin.site.register(COTY, COTYAdmin)
 admin.site.register(QualPoints, QualPointsAdmin)
+
+admin.site.register(QualBar, QualBarAdmin)
 admin.site.register(QUAL, QUALAdmin)

@@ -1,7 +1,7 @@
 $font-size-base: .9rem;
 
 $theme-colors: (
-    "primary":#731DDD,
+    "primary":#045fb0,
     "danger": #580000,
     "success": #70A363,
     "secondary": #668586,
@@ -10,6 +10,21 @@ $theme-colors: (
 
 .table>tbody>tr>td {
     vertical-align: middle;
+}
+
+@for $i from 1 through 10 {
+    .rounded-l#{$i} {
+        border-radius: $i * 3px !important;
+        overflow: hidden;
+        border : 1px solid lightgray !important;
+    }
+}
+
+nav {
+    border-bottom-left-radius: 25px;
+    border-bottom-right-radius: 25px;
+    padding-bottom : 20px !important;
+    font-weight: 600 !important;
 }
 
 .select2 {

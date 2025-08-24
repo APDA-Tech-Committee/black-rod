@@ -75,7 +75,7 @@ class DebaterDetailView(CustomDetailView):
     public_view = True
     model = Debater
     template_name = "debaters/detail.html"
-
+    
     buttons = [
         {
             "name": "Delete",
