@@ -1,6 +1,5 @@
 # pylint: disable=import-outside-toplevel
 
-from unittest.mock import patch
 from django.test import TestCase, RequestFactory
 from django.contrib.auth import get_user_model
 from apdaonline import adapter, provider, views, urls
@@ -59,21 +58,20 @@ class ApdaOnlineModuleTests(TestCase):
     def test_oauth_integration_mock(self):
         """Test OAuth integration with mocked dependencies"""
         # Simple test without complex mocking that can fail in different environments
-        from django.contrib.auth import get_user_model
         User = get_user_model()
-        
+
         # Test basic user creation and retrieval without mocking ORM methods
         test_user = User.objects.create_user(
-            username="oauth_test_user", 
-            email="oauth@example.com", 
+            username="oauth_test_user",
+            email="oauth@example.com",
             password="testpass123"
         )
-        
+
         # Verify the user was created
         retrieved_user = User.objects.get(username="oauth_test_user")
         self.assertEqual(retrieved_user.email, "oauth@example.com")
         self.assertTrue(retrieved_user.is_active)
-        
+
         # Clean up
         test_user.delete()
 
@@ -104,15 +102,15 @@ class ApdaOnlineModuleTests(TestCase):
         # Test user profile updates without complex mocking
         original_first_name = self.user.first_name
         original_last_name = self.user.last_name
-        
+
         self.user.first_name = "Test"
         self.user.last_name = "User"
         self.user.save()
-        
+
         # Verify the changes
         self.assertEqual(self.user.first_name, "Test")
         self.assertEqual(self.user.last_name, "User")
-        
+
         # Restore original values
         self.user.first_name = original_first_name
         self.user.last_name = original_last_name
