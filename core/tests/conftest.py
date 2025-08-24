@@ -73,6 +73,15 @@ def pytest_configure():
             "django.contrib.auth.backends.ModelBackend",
             "allauth.account.auth_backends.AuthenticationBackend",
         ],
+        # Add allauth settings for testing
+        ACCOUNT_EMAIL_VERIFICATION="none",
+        ACCOUNT_EMAIL_REQUIRED=False,
+        ACCOUNT_AUTHENTICATION_METHOD="username",
+        ACCOUNT_USER_MODEL_USERNAME_FIELD="username",
+        SOCIALACCOUNT_AUTO_SIGNUP=True,
+        SOCIALACCOUNT_EMAIL_VERIFICATION="none",
+        LOGIN_REDIRECT_URL="/",
+        LOGOUT_REDIRECT_URL="/",
         # Add SEASONS setting needed by forms
         SEASONS=tuple(
             (str(year), f"{year}-{str(year+1)[2:]}")
@@ -94,7 +103,7 @@ def pytest_configure():
             "taggit": None,
         },
     )
-        
+
     django.setup()
 
 

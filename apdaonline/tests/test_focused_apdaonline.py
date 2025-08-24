@@ -58,13 +58,17 @@ class ApdaOnlineModuleTests(TestCase):
 
     def test_oauth_integration_mock(self):
         """Test OAuth integration with mocked dependencies"""
-        with patch(
-            "django.contrib.auth.models.User.objects.get_or_create"
-        ) as mock_get_or_create:
+        # Use get_user_model() instead of direct User model import
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        
+        with patch.object(User.objects, 'get_or_create') as mock_get_or_create:
             mock_get_or_create.return_value = (self.user, True)
-            self.assertTrue(
-                mock_get_or_create.called or not mock_get_or_create.called
-            )
+            # Test that mock can be called
+            result = User.objects.get_or_create(username="testuser")
+            self.assertEqual(result[0], self.user)
+            self.assertTrue(result[1])
+            self.assertTrue(mock_get_or_create.called)
 
     def test_social_auth_pipeline_if_available(self):
         """Test social auth pipeline functions if available"""

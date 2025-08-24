@@ -104,23 +104,25 @@ WSGI_APPLICATION = "apda.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-# Default to SQLite for testing and development
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+# Set defaults for non-production environments
+if os.environ.get("ENV") != "production":
+    # Default to SQLite for testing and development
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        }
     }
-}
 
-# Default cache setting
-CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    # Default cache setting
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+        }
     }
-}
 
-# Default allowed hosts
-ALLOWED_HOSTS = ["*"]
+    # Default allowed hosts
+    ALLOWED_HOSTS = ["*"]
 
 if os.environ.get("ENV") == "development":
     DATABASES = {
@@ -228,6 +230,12 @@ AUTHENTICATION_BACKENDS = [
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 ACCOUNT_USER_MODEL_USERNAME_FIELD = "username"
+
+# Basic allauth settings required for imports (test/dev only)
+if os.environ.get("ENV") != "production":
+    ACCOUNT_EMAIL_VERIFICATION = "none"
+    ACCOUNT_EMAIL_REQUIRED = False
+    ACCOUNT_AUTHENTICATION_METHOD = "username"
 
 SOCIALACCOUNT_ADAPTER = "apdaonline.adapter.APDAOnlineAdapter"
 SOCIALACCOUNT_PROVIDERS = {
