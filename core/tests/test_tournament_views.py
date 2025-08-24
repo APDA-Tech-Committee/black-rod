@@ -1,10 +1,7 @@
-"""
-Tests for tournament views
-"""
-
+# pylint: disable=import-outside-toplevel
+from datetime import date
 from django.test import TestCase, Client
 from django.urls import reverse
-from datetime import date
 
 from core.models import School, Tournament, Debater, Team
 from core.models.results.team import TeamResult

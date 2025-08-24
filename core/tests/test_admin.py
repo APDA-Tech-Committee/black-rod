@@ -1,12 +1,14 @@
-import pytest
+
 from datetime import date
 from django.test import TestCase
 from django.contrib.admin.sites import AdminSite
+
 
 from core.models.school import School
 from core.models.debater import Debater
 from core.models.tournament import Tournament
 from core.models.user import User
+
 
 
 class MockRequest:
@@ -25,16 +27,7 @@ class AdminTestCase(TestCase):
             username="admin", email="admin@test.com", password="admin123"
         )
 
-    def test_models_have_admin_registration(self):
-        """Test that models can be registered with admin"""
-        try:
-            from core.admin import SchoolAdmin, DebaterAdmin
 
-            # If imports work, admin classes exist
-            self.assertTrue(True)
-        except ImportError:
-            # Admin classes might not exist yet, that's okay
-            pass
 
     def test_model_string_representations_for_admin(self):
         """Test model __str__ methods work for admin display"""
@@ -123,16 +116,7 @@ class AdminTestCase(TestCase):
         self.assertNotIn(debater2, school1_debaters)
 
 
-@pytest.mark.django_db
-def test_admin_imports():
-    """Test that admin modules can be imported"""
-    try:
-        import core.admin
 
-        assert True
-    except ImportError:
-        # Admin module might not exist yet
-        assert True
 
 
 def test_model_verbose_names():

@@ -1,3 +1,4 @@
+# pylint: disable=import-outside-toplevel
 import pytest
 from django.test import TestCase
 

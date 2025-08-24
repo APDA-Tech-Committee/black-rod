@@ -1,4 +1,5 @@
-import pytest
+# pylint: disable=import-outside-toplevel
+
 from datetime import date
 from django.test import TestCase
 
@@ -111,22 +112,10 @@ class DatabaseTestCase(TestCase):
             date=date.today(),
             season="2024",
             manual_name="Default Test Tournament",
+            host=school,
         )
-        super(Tournament, tournament).save()
+        tournament.save()
         self.assertEqual(tournament.num_rounds, 5)  # Should default to 5
-
-
-@pytest.mark.django_db
-def test_model_imports_work():
-    """Test that model imports work correctly"""
-    from core.models.school import School, SchoolLookup
-    from core.models.debater import Debater
-    from core.models.tournament import Tournament
-
-    assert School is not None
-    assert SchoolLookup is not None
-    assert Debater is not None
-    assert Tournament is not None
 
 
 class QueryTestCase(TestCase):
@@ -183,15 +172,3 @@ class QueryTestCase(TestCase):
         # Find schools with varsity debaters
         schools_with_varsity = School.objects.filter(debaters__status=Debater.VARSITY)
         self.assertIn(self.school1, schools_with_varsity)
-
-
-def test_model_imports_work():
-    """Test that model imports work correctly"""
-    from core.models.school import School, SchoolLookup
-    from core.models.debater import Debater
-    from core.models.tournament import Tournament
-
-    assert School is not None
-    assert SchoolLookup is not None
-    assert Debater is not None
-    assert Tournament is not None

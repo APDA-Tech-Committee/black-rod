@@ -1,1 +1,1 @@
-# This file makes the tests directory a Python package
+# pylint: disable=import-outside-toplevel

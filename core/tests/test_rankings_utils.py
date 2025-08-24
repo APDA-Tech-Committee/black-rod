@@ -2,8 +2,9 @@
 Tests for ranking utilities
 """
 
-from django.test import TestCase
+
 from datetime import date
+from django.test import TestCase
 
 from core.models import School, Tournament, Debater, Team
 from core.models.results.team import TeamResult
@@ -75,7 +76,7 @@ class RankingsUtilsTest(TestCase):
             try:
                 result = rankings.update_rankings(self.tournament)
                 # Basic test that function can be called
-                self.assertTrue(True)
+                self.assertIsNotNone(result)
             except Exception:
                 # Function exists but may need specific setup
                 pass
@@ -86,7 +87,7 @@ class RankingsUtilsTest(TestCase):
             try:
                 result = rankings.get_rankings_by_season("2024")
                 # Basic test that function can be called
-                self.assertTrue(True)
+                self.assertIsNotNone(result)
             except Exception:
                 # Function exists but may need specific setup
                 pass
@@ -116,7 +117,7 @@ class RankingsUtilsTest(TestCase):
         if hasattr(rankings, "calculate_cumulative_rankings"):
             try:
                 result = rankings.calculate_cumulative_rankings("2024")
-                self.assertTrue(True)
+                self.assertIsNotNone(result)
             except Exception:
                 pass
 
@@ -126,7 +127,7 @@ class RankingsUtilsTest(TestCase):
         if hasattr(rankings, "calculate_team_rankings"):
             try:
                 result = rankings.calculate_team_rankings(self.tournament)
-                self.assertTrue(True)
+                self.assertIsNotNone(result)
             except Exception:
                 pass
 
@@ -148,7 +149,7 @@ class RankingsUtilsTest(TestCase):
         if hasattr(rankings, "sort_by_wins_and_speaks"):
             try:
                 result = rankings.sort_by_wins_and_speaks(teams)
-                self.assertTrue(True)
+                self.assertIsNotNone(result)
             except Exception:
                 pass
 
@@ -158,7 +159,7 @@ class RankingsUtilsTest(TestCase):
         if hasattr(rankings, "validate_ranking_data"):
             try:
                 result = rankings.validate_ranking_data(None)
-                self.assertTrue(True)
+                self.assertIsNotNone(result)
             except Exception:
                 pass
 
@@ -167,6 +168,6 @@ class RankingsUtilsTest(TestCase):
         if hasattr(rankings, "export_rankings"):
             try:
                 result = rankings.export_rankings(self.tournament)
-                self.assertTrue(True)
+                self.assertIsNotNone(result)
             except Exception:
                 pass

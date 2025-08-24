@@ -1,7 +1,8 @@
-import pytest
-from django.test import TestCase
+# pylint: disable=import-outside-toplevel
 from unittest.mock import Mock, patch
 from decimal import Decimal
+import pytest
+from django.test import TestCase
 
 from core.templatetags.tags import register
 

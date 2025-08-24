@@ -1,3 +1,4 @@
+# pylint: disable=import-outside-toplevel
 import django
 from django.conf import settings
 

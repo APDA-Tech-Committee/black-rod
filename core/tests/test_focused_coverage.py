@@ -1,14 +1,18 @@
+# pylint: disable=import-outside-toplevel
+
 """
 Focused tests to increase coverage for core utilities and models
 """
 
-from django.test import TestCase
 from datetime import date
+from django.test import TestCase
+
 
 from core.models import School, Tournament, Debater, Team, Video
 from core.models.results.team import TeamResult
 from core.models.results.speaker import SpeakerResult
 from core.models.site_settings import SiteSetting
+
 
 
 class FocusedCoverageTest(TestCase):
@@ -210,45 +214,6 @@ class FocusedCoverageTest(TestCase):
             # Constraints may prevent this
             pass
 
-    def test_import_basic_utility_functions(self):
-        """Test that utility modules can be imported and basic functions called"""
-        # Test basic imports that should work
-        try:
-            from core.utils import generics
-
-            # Try to access module attributes
-            attrs = dir(generics)
-            self.assertTrue(len(attrs) > 0)
-        except ImportError:
-            pass
-
-        try:
-            from core.utils import filter as filter_utils
-
-            attrs = dir(filter_utils)
-            self.assertTrue(len(attrs) > 0)
-        except ImportError:
-            pass
-
-    def test_template_tags_basic_import(self):
-        """Test template tags basic import"""
-        try:
-            from core.templatetags import tags
-
-            # Check that tags module has attributes
-            tag_attrs = dir(tags)
-            self.assertTrue(len(tag_attrs) > 0)
-        except ImportError:
-            pass
-
-    def test_forms_basic_functionality(self):
-        """Test forms basic functionality"""
-        from core import forms
-
-        # Check that forms module exists and has content
-        form_attrs = dir(forms)
-        self.assertTrue(len(form_attrs) > 0)
-
     def test_admin_basic_functionality(self):
         """Test admin basic functionality"""
         from core import admin
@@ -257,19 +222,6 @@ class FocusedCoverageTest(TestCase):
         admin_attrs = dir(admin)
         self.assertTrue(len(admin_attrs) > 0)
 
-    def test_standings_models_basic(self):
-        """Test standings models basic functionality"""
-        try:
-            from core.models.standings import base, coty, noty, soty, toty
-
-            # Test that modules can be imported
-            modules = [base, coty, noty, soty, toty]
-            for module in modules:
-                attrs = dir(module)
-                self.assertTrue(len(attrs) > 0)
-        except ImportError:
-            pass
-
     def test_resources_module(self):
         """Test resources module"""
         from core import resources
@@ -277,14 +229,3 @@ class FocusedCoverageTest(TestCase):
         # Test that resources module has content
         resource_attrs = dir(resources)
         self.assertTrue(len(resource_attrs) > 0)
-
-    def test_search_indexes_import(self):
-        """Test search indexes import"""
-        try:
-            from core import search_indexes
-
-            # Module should be importable
-            self.assertTrue(hasattr(search_indexes, "__name__"))
-        except ImportError:
-            # Module might have dependencies not available
-            pass

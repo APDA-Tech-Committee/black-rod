@@ -1,10 +1,12 @@
+# pylint: disable=import-outside-toplevel
 """
 Tests for debater views
 """
 
+
+from datetime import date
 from django.test import TestCase, Client
 from django.urls import reverse
-from datetime import date
 
 from core.models import School, Tournament, Debater
 from core.models.results.speaker import SpeakerResult

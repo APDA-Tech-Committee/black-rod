@@ -1,9 +1,9 @@
+# pylint: disable=import-outside-toplevel
 """
 Tests for core model methods and additional coverage
 """
-
-from django.test import TestCase
 from datetime import date
+from django.test import TestCase
 
 from core.models import School, Tournament, Debater, Team, Video
 from core.models.results.team import TeamResult

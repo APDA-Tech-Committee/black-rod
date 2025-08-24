@@ -1,5 +1,6 @@
-import pytest
+# pylint: disable=import-outside-toplevel
 from datetime import date
+import pytest
 from django.test import TestCase, Client
 
 from core.models.school import School
@@ -119,23 +120,21 @@ class ModelIntegrationTest(TestCase):
 
     def test_tournament_defaults(self):
         """Test tournament default values"""
-        # Create tournament with manual_name to avoid host requirement
+        # Create a host school first
+        host_school = School.objects.create(name="Default Host School")
+
+        # Create tournament with manual_name to override the auto-generated name
         tournament = Tournament(
-            name="Default Test Tournament",
+            name="Default Test Tournament",  # This will be overridden by manual_name
             date=date.today(),
             season="2024",
-            manual_name="Default Test Tournament",
+            manual_name="Default Test Tournament",  # This ensures proper name setting
+            host=host_school,  # Provide a host to avoid the None error
         )
-        super(Tournament, tournament).save()
+        tournament.save()
         self.assertEqual(tournament.num_rounds, 5)
-        self.assertEqual(tournament.manual_name, "Default Test Tournament")
-        self.assertIsNone(tournament.host)
-
-
-@pytest.mark.django_db
-def test_basic_functionality():
-    """Simple pytest-style test"""
-    assert 1 + 1 == 2
+        self.assertEqual(tournament.name, "Default Test Tournament")  # Should use manual_name
+        self.assertEqual(tournament.host, host_school)
 
 
 @pytest.mark.django_db

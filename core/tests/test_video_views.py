@@ -1,15 +1,12 @@
-"""
-Tests for video views
-"""
-
+# pylint: disable=import-outside-toplevel
+from datetime import date
 from django.test import TestCase, Client
 from django.urls import reverse
-from datetime import date
 
 from core.models import School, Tournament, Debater, Video
 
 
-class VideoViewsTest(TestCase):
+class VideoViewsTest(TestCase):  # pylint: disable=too-many-instance-attributes
     """Test video views"""
 
     def setUp(self):
