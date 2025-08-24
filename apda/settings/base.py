@@ -104,6 +104,24 @@ WSGI_APPLICATION = "apda.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# Default to SQLite for testing and development
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+    }
+}
+
+# Default cache setting
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
+    }
+}
+
+# Default allowed hosts
+ALLOWED_HOSTS = ["*"]
+
 if os.environ.get("ENV") == "development":
     DATABASES = {
         "default": {

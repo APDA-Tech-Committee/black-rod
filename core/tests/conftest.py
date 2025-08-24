@@ -5,17 +5,18 @@ from django.conf import settings
 
 def pytest_configure():
     """Configure Django for pytest"""
-    settings.configure(
-        DEBUG_PROPAGATE_EXCEPTIONS=True,
-        DATABASES={
-            "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}
-        },
-        SITE_ID=1,
-        SECRET_KEY="test-secret-key-for-pytest-only",
-        USE_I18N=True,
-        USE_L10N=True,
-        STATIC_URL="/static/",
-        ROOT_URLCONF="apda.urls",
+    if not settings.configured:
+        settings.configure(
+            DEBUG_PROPAGATE_EXCEPTIONS=True,
+            DATABASES={
+                "default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}
+            },
+            SITE_ID=1,
+            SECRET_KEY="test-secret-key-for-pytest-only",
+            USE_I18N=True,
+            USE_L10N=True,
+            STATIC_URL="/static/",
+            ROOT_URLCONF="apda.urls",
         TEMPLATES=[
             {
                 "BACKEND": "django.template.backends.django.DjangoTemplates",
@@ -93,7 +94,7 @@ def pytest_configure():
             "taggit": None,
         },
     )
-
+        
     django.setup()
 
 
